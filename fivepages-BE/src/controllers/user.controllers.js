@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import User from "../models/user.models.js";
 
 const generateAccessToken = async (userId) => {

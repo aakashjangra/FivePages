@@ -12,8 +12,8 @@ const novelSchema = new mongoose.Schema(
       type: String, enum: ['Light Novel', 'Web Novel', 'Chinese Novel', 'Korean Novel', 'Japanese Novel']
     },
     language: { type: String, enum: ['English', 'Chinese', 'Korean', 'Japanese'] },
-    totalChapters: { type: Number, required: true },
     tags: { type: [String] },
+    chapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }]  
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields

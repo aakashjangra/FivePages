@@ -1,5 +1,7 @@
 import express from 'express'
 import userRoutes from './routes/user.routes.js'
+import novelRoutes from './routes/novel.routes.js'
+import chapterRoutes from './routes/chapter.routes.js'
 
 //loading environment variables
 import 'dotenv/config'
@@ -18,6 +20,10 @@ app.get('/api/v1/', (request, response) => {
 
 //routes
 app.use('/api/v1/user', userRoutes)
+
+app.use('/api/v1/novels', novelRoutes);
+
+app.use('/api/v1/chapters', chapterRoutes);
 
 const PORT = process.env.PORT || 3000
 
