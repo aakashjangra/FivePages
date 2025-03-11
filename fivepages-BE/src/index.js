@@ -13,6 +13,8 @@ const app = express()
 connectDB();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors())
 
 app.get('/api/v1/', (request, response) => {
   response.send('<h1>Hi from backend</h1>')
