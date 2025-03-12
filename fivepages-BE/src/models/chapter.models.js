@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const chapterSchema = new mongoose.Schema(
   {
     chapterNumber: { type: Number, required: true },
-    title: { type: String },
+    title: { type: String }, //optional
     content: { type: String, required: true },
     novel: { type: mongoose.Schema.Types.ObjectId, ref: 'Novel', required: true }
   },

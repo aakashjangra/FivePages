@@ -21,11 +21,11 @@ export const getNovelByID = async (req, res) => {
 
 export const createNovel = async (req, res) => {
 
-  const { title, author, genre, publishedYear, synopsis, totalChapters, rating, type, language, tags } = req.body;
+  const { title, author, publishedYear, synopsis, rating, type, language, tags } = req.body;
 
   // Validate request body
-  if (!req.body.title || !req.body.author || !req.body.genre || !req.body.publishedYear || !req.body.synopsis || !req.body.totalChapters) {
-    return res.status(400).json({ message: 'Title, author, genre, and published year are required' });
+  if (!req.body.title || !req.body.author || !req.body.publishedYear || !req.body.synopsis || !req.body.tags) {
+    return res.status(400).json({ message: 'Title, author, tags and published year are required' });
   }
 
   // Check if novel already exists
@@ -36,7 +36,7 @@ export const createNovel = async (req, res) => {
 
   try {
     const novel = await Novel.create(
-      { title, author, genre, publishedYear, synopsis, totalChapters, rating: rating ? rating : 5, type: type ? type : "any", language: language ? language : "any", tags: tags ? tags : [] }
+      { title, author, publishedYear, synopsis, rating: rating ? rating : 5, type: type ? type : "NA", language: language ? language : "NA", tags}
     );
     res.status(201).json(novel);
   } catch (err) {

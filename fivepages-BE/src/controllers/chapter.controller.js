@@ -3,11 +3,15 @@ import Chapter from '../models/chapter.models.js';
 
 
 export const createChapter = async (req, res) => {
-  const { novelId, chapterNumber, title, content, spaces } = req.body;
+  const { novelId, chapterNumber, title, content } = req.body;
+
+  if(!novelId || (!chapterNumber && chapterNumber != 0) || isNaN(chapterNumber) || !content) {
+    return res.status(400).json({ message: 'Novel ID, chapter number, and content are required' });
+  }
 
   try {
     // Create chapter
-    const chapter = await Chapter.create({ novel: novelId, chapterNumber, title, content, spaces });
+    const chapter = await Chapter.create({ novel: novelId, chapterNumber, title: title? title: "", content });
 
     // Push chapter to novel
     await Novel.findByIdAndUpdate(novelId, { $push: { chapters: chapter._id } });
