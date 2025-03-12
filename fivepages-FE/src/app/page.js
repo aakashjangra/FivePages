@@ -1,4 +1,4 @@
-import NovelPage from "../Components/noveldescription";
+import NovelPage from "./Components/noveldescription";
 
 export default function Home() {
   return (
