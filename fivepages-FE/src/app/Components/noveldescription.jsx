@@ -1,6 +1,9 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { BookmarkCheck, BookmarkPlus, BookOpen, Heart } from "lucide-react";
+import styles from "./noveldescription.module.css";
 
 export default function NovelPage() {
   const novel = {
@@ -49,6 +52,29 @@ export default function NovelPage() {
       setNewComment("");
     }
   };
+  const [isInReadList, setIsInReadList] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+
+  const router = useRouter();
+  // buttons start
+  // Handle Read List
+  const toggleReadList = () => {
+    setIsInReadList(!isInReadList);
+    alert(`${novelTitle} ${isInReadList ? 'removed from' : 'added to'} Read List!`);
+  };
+
+  // Handle Like
+  const toggleLike = () => {
+    setIsLiked(!isLiked);
+    alert(`${novelTitle} ${isLiked ? 'removed from' : 'added to'} Liked Novels!`);
+  };
+
+  // Handle Read Now
+  const readNow = () => {
+    router.push(`/chapter/1`);
+  };
+// button end
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#F4F4F4] p-8">
@@ -79,6 +105,45 @@ export default function NovelPage() {
             </p>
           </div>
         </div>
+        <div className="flex space-x-4 mt-4">
+
+          {/* button exrctution */}
+          {/* Read Now Button */}
+      <button
+        onClick={readNow}
+        className="px-4 py-2 flex gap-2 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+      >
+        <BookOpen /> Start Reading
+      </button>
+
+      {/* Read List Button */}
+      <button
+        onClick={toggleReadList}
+        className={`px-4 py-2 border flex gap-2 items-center rounded-lg transition ${
+          isInReadList ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-800'
+        }`}
+      >
+        {/* <BookmarkPlus /> Add to Readlist */}
+        <BookmarkCheck /> Added to Readlist
+      </button>
+
+      {/* Like Button */}
+      <button
+        onClick={toggleLike}
+        className={`px-4 py-2 transition ${
+          isLiked ? 'text-red-500' : 'text-gray-800'
+        }`}
+      >
+        <span className='text-2xl h-10 w-10'>
+        {isLiked ? <span className={styles.redHeart}><Heart color="#bd0f0f" /></span>: <Heart />}
+        </span>
+        
+      </button>
+
+      
+    </div>
+
+{/* button exrctution end */}
 
         {/* Tags */}
         <div className="mt-8 flex flex-wrap gap-5">
