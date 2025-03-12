@@ -48,45 +48,43 @@ export default function NovelPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F4F4F4]">
+    <div className="flex justify-center items-center min-h-screen bg-[#F4F4F4] p-6">
       <div className="w-full max-w-3xl p-6 bg-white shadow-md border border-gray-300 rounded-xl">
         {/* Novel Header */}
-        <div className="p-8 rounded-xl">
-          <div className="flex gap-6">
-            <img
-              src={novel.image}
-              alt={novel.title}
-              className="w-44 h-64 object-cover rounded-lg border border-gray-300"
-            />
-            <div className="flex flex-col justify-between">
-              <h1 className="text-3xl font-bold text-gray-800">{novel.title}</h1>
-              <p className="text-gray-600 mt-2">
-                <span className="font-semibold">Author:</span> {novel.author}
-              </p>
-              <p className="text-gray-600 mt-1">
-                <span className="font-semibold">Total Chapters:</span>{" "}
-                {novel.totalChapters}
-              </p>
-            </div>
+        <div className="flex gap-6">
+          <img
+            src={novel.image}
+            alt={novel.title}
+            className="w-44 h-64 object-cover rounded-lg border border-gray-300"
+          />
+          <div className="flex flex-col justify-between">
+            <h1 className="text-3xl font-bold text-gray-800">{novel.title}</h1>
+            <p className="text-gray-600 mt-2">
+              <span className="font-semibold">Author:</span> {novel.author}
+            </p>
+            <p className="text-gray-600 mt-1">
+              <span className="font-semibold">Total Chapters:</span>{" "}
+              {novel.totalChapters}
+            </p>
           </div>
+        </div>
 
-          {/* Tags */}
-          <div className="mt-6 flex flex-wrap gap-3">
-            {novel.tags.map((tag, index) => (
-              <span
-                key={index}
-                className="px-4 py-2 bg-[#E3EAFD] text-[#4A5B94] rounded-full text-sm"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+        {/* Tags */}
+        <div className="mt-6 flex flex-wrap gap-3">
+          {novel.tags.map((tag, index) => (
+            <span
+              key={index}
+              className="px-4 py-2 bg-[#E3EAFD] text-[#4A5B94] rounded-full text-sm"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
 
-          {/* Synopsis */}
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold text-gray-800">Synopsis</h2>
-            <p className="text-gray-700 leading-7 mt-2">{novel.synopsis}</p>
-          </div>
+        {/* Synopsis */}
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold text-gray-800">Synopsis</h2>
+          <p className="text-gray-700 leading-7 mt-2">{novel.synopsis}</p>
         </div>
 
         {/* Chapters */}
