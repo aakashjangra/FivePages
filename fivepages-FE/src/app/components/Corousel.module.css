@@ -1,0 +1,68 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #222;
+    color: white;
+  }
+  
+  .navLeft, .navRight {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navIcon {
+    color: white;
+    font-size: 20px;
+    margin: 0 10px;
+  }
+  
+  .navMenu {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .navMenu li {
+    position: relative;
+  }
+  
+  .navMenu a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .navLogin {
+    margin-left: 15px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #444;
+  }
+  
+  .carouselContainer {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    overflow: hidden;
+  }
+  
+  .swiper {
+    width: 100%;
+    height: 300px;
+  }
+  
+  .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
