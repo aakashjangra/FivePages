@@ -1,7 +1,8 @@
 import Novel from '../models/novel.models.js';
 import Chapter from '../models/chapter.models.js';
+import mongoose from 'mongoose';
 
-
+// done and tested
 export const createChapter = async (req, res) => {
   const { novelId, chapterNumber, title, content } = req.body;
 
@@ -22,9 +23,16 @@ export const createChapter = async (req, res) => {
   }
 }
 
+//done
 export const getAllChapters = async (req, res) => {
+  const novelID = req.params.novelId;
+
+  if(!novelID || typeof novelID !== 'string' || !novelID.trim() || !mongoose.Types.ObjectId.isValid(novelID)) {
+    return res.status(400).json({ message: 'Novel ID is required' });
+  }
+
   try {
-    const chapters = await Chapter.find({ novel: req.params.novelId }).sort('chapterNumber');
+    const chapters = await Chapter.find({ novel: novelID }).sort('chapterNumber');
     res.status(200).json(chapters);
   } catch (err) {
     res.status(500).json({ message: err.message });
