@@ -12,6 +12,7 @@ export default function AuthPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
+
     
     if (!email || !password) {
       setError('Please fill in all fields.');
@@ -30,7 +31,7 @@ export default function AuthPage() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#F4F4F4]">
       <div className="bg-white shadow-xl w-full max-w-md form-container p-6 ">
-        <h2 className="text-4xl font-bold text-center text-gray-800 mb-6">
+        <h2 className="text-5xl font-bold text-center text-gray-800 mb-6">
           {isLogin ? 'Login' : 'Sign Up'}
         </h2>
 
@@ -42,31 +43,31 @@ export default function AuthPage() {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="text-xl">
+          <div className="">
             <label className="text-gray-700 font-medium">Email</label>
             <input
               type="email"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-4 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full p-2 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
-          <div className="mb-6 text-xl">
+          <div className="mb-6">
             <label className="text-md block text-gray-700 font-medium mb-2">Password</label>
             <input
               type="password"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-4 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full p-2 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <button
             type="submit"
-            className="text-xl w-full bg-blue-500 text-white p-6 rounded font-semibold hover:bg-blue-700 transition"
+            className="w-full bg-blue-500 text-white p-2 rounded font-semibold hover:bg-blue-700 transition"
           >
             {isLogin ? 'Login' : 'Sign Up'}
           </button>

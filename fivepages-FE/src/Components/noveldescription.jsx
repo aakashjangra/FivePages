@@ -33,10 +33,10 @@ export default function NovelPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="border p-6">
       {/* Novel Header */}
       <div className="flex gap-4">
-        <img src={novel.image} alt={novel.title} className="w-40 h-60 object-cover rounded-lg" />
+        <img src={novel.image} alt={novel.title} className=" border w-40 h-60 object-cover rounded" />
         <div>
           <h1 className="text-2xl font-bold">{novel.title}</h1>
           <p className="text-gray-600">Author: {novel.author}</p>
@@ -47,7 +47,7 @@ export default function NovelPage() {
       {/* Tags */}
       <div className="mt-4 flex flex-wrap gap-2">
         {novel.tags.map((tag, index) => (
-          <span key={index} className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">{tag}</span>
+          <span key={index} className="px-3 py-4 bg-gray-200 text-gray-700 rounded text-sm">{tag}</span>
         ))}
       </div>
 
@@ -91,7 +91,7 @@ export default function NovelPage() {
           onChange={(e) => setNewComment(e.target.value)}
         ></textarea>
         <button
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
           onClick={handleCommentSubmit}
         >
           Post Comment
@@ -103,7 +103,7 @@ export default function NovelPage() {
         <div className="mt-4">
           <h2 className="text-xl font-semibold">Comments ({comments.length})</h2>
           {comments.map((comment, index) => (
-            <div key={index} className="mt-2 p-2 border rounded-lg">
+            <div key={index} className="mt-2 px-4 py-2 border border rounded">
               <p className="font-semibold">{comment.user} <span className="text-gray-500 text-sm">{comment.time}</span></p>
               <p>{comment.text}</p>
             </div>

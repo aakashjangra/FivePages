@@ -1,5 +1,4 @@
-import Demo from "./components/noveldescription";
-import NovelPage from "./components/noveldescription";
+import NovelPage from "../Components/noveldescription";
 
 export default function Home() {
   return (
