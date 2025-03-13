@@ -80,10 +80,20 @@ export const createNovel = async (req, res) => {
   }
 }
 
+//done 
 export const deleteNovel = async (req, res) => {
+
+  const novelID = req.params.id;
+
+  if (!novelID || typeof novelID !== 'string' || !novelID.trim() || !mongoose.Types.ObjectId.isValid(novelID)) {
+    return res.status(400).json({ message: 'Novel ID is required' });
+  }
+
   try {
-    const novel = await Novel.findByIdAndDelete(req.params.id);
+    const novel = await Novel.findByIdAndDelete(novelID);
+
     if (!novel) return res.status(404).json({ message: 'Novel not found' });
+
     res.status(200).json({ message: 'Novel deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
