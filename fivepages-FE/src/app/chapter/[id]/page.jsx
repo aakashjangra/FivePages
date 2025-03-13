@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -14,16 +15,27 @@ const recommendedNovels = [
   { id: 2, title: 'Immortal Dao Chronicles' }
 ];
 
+// <<<<<<< HEAD
 export default function ChapterPage() {
   const router = useRouter();
   const params = useParams(); // ✅ Correct way to access params
   const id = Number(params.id); // Convert to number
 
   const chapter = chapters.find((ch) => ch.id === id);
+// =======
+// export default function ChapterPage({ params }) {
+
+//   const router = useRouter();
+//   const {id} = use(params);
+//   const chapter = chapters.find((ch) => ch.id == id);
+// >>>>>>> 7ee0db8a8f390953e0711621d0a452627cf962c3
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+
+  // // re
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+// <<<<<<< HEAD
     useEffect(() => {
       const user = localStorage.getItem('user'); 
       if (!user) {
@@ -36,6 +48,23 @@ export default function ChapterPage() {
     if (!isAuthenticated) {
       return <p className="text-center text-gray-500 text-lg mt-10">Redirecting to login...</p>;
     }
+// =======
+//   useEffect(() => {
+//     // Simulate authentication check (Replace with actual logic)
+    
+//     const user = localStorage.getItem('user'); // Assuming you store user data in localStorage
+//     if (!user) {
+//       router.push('/login'); // Redirect to login page if not authenticated
+//     } else {
+//       setIsAuthenticated(true);
+//     }
+//   }, []);
+
+//   if (!isAuthenticated) {
+//     return <p>Redirecting to login...</p>;
+//   } 
+
+// >>>>>>> 7ee0db8a8f390953e0711621d0a452627cf962c3
 
   const addComment = () => {
     if (newComment.trim() !== '') {
@@ -43,6 +72,7 @@ export default function ChapterPage() {
       setNewComment('');
     }
   };
+
 
   if (!chapter) return <p className="text-center text-gray-500 text-lg mt-10">Chapter not found</p>;
 

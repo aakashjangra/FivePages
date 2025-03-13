@@ -1,3 +1,4 @@
+
 import NovelPage from "./Components/noveldescription";
 
 export default function Home() {
@@ -5,5 +6,5 @@ export default function Home() {
     <div>
       <NovelPage/>
     </div>
-  );
+  )
 }

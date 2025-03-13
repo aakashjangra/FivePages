@@ -6,6 +6,7 @@ import Link from 'next/link';
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
@@ -14,11 +15,15 @@ export default function AuthPage() {
     setError('');
 
     
-    if (!email || !password) {
+    if (!email || !password || !name) {
       setError('Please fill in all fields.');
       return;
     }
     
+    if (name.length < 3) {
+      setError('name must be at least 6 characters.');
+      return;
+    }
     if (password.length < 6) {
       setError('Password must be at least 6 characters.');
       return;
@@ -29,8 +34,8 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F4F4F4]">
-      <div className="bg-white shadow-xl w-full max-w-md form-container p-6 ">
+    <div className="flex justify-center items-center  min-h-screen bg-[#F4F4F4]">
+      <div className="bg-white shadow-xl rounded-lg w-full max-w-md form-container p-6 ">
         <h2 className="text-5xl font-bold text-center text-gray-800 mb-6">
           {isLogin ? 'Login' : 'Sign Up'}
         </h2>
@@ -43,6 +48,16 @@ export default function AuthPage() {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="">
+            <label className="text-gray-700 font-medium">Name</label>
+            <input
+              type="name"
+              placeholder="Enter your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-2 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
           <div className="">
             <label className="text-gray-700 font-medium">Email</label>
             <input
