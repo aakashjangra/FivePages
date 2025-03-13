@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/add', createChapter);
 
 // Get all chapters for a specific novel
-router.get('/:novelId', getAllChapters);
+router.get('/novel/:novelId', getAllChapters);
 
 // Get a single chapter by ID
 router.get('/:id', getChapterByID);
