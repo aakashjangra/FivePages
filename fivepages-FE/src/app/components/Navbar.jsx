@@ -1,7 +1,6 @@
 import styles from "./Navbar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faCaretDown, faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
-import Home from './../page';
 
 export default function Navbar() {
   return (

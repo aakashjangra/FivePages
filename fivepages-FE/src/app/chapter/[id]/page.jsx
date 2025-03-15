@@ -1,8 +1,7 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 const chapters = [
   { id: 1, title: 'Memories from the Past', content: 'Chapter 1 content goes here...' },
@@ -15,32 +14,28 @@ const recommendedNovels = [
   { id: 2, title: 'Immortal Dao Chronicles' }
 ];
 
-export default function ChapterPage({ params }) {
-
+export default function ChapterPage() {
   const router = useRouter();
-  const {id} = use(params);
-  const chapter = chapters.find((ch) => ch.id == id);
+  const params = useParams(); // ✅ Correct way to access params
+  const id = Number(params.id); // Convert to number
+
+  const chapter = chapters.find((ch) => ch.id === id);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-
-  // // re
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    // Simulate authentication check (Replace with actual logic)
-    
-    const user = localStorage.getItem('user'); // Assuming you store user data in localStorage
-    if (!user) {
-      router.push('/login'); // Redirect to login page if not authenticated
-    } else {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  if (!isAuthenticated) {
-    return <p>Redirecting to login...</p>;
-  } 
-
+    // useEffect(() => {
+    //   const user = localStorage.getItem('user'); 
+    //   if (!user) {
+    //     router.push('/login');
+    //   } else {
+    //     setIsAuthenticated(true);
+    //   }
+    // }, []);
+  
+    // if (!isAuthenticated) {
+    //   return <p className="text-center text-gray-500 text-lg mt-10">Redirecting to login...</p>;
+    // }
 
   const addComment = () => {
     if (newComment.trim() !== '') {
@@ -48,7 +43,6 @@ export default function ChapterPage({ params }) {
       setNewComment('');
     }
   };
-
 
   if (!chapter) return <p className="text-center text-gray-500 text-lg mt-10">Chapter not found</p>;
 

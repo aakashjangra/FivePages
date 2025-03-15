@@ -1,43 +1,44 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
-    
     if (!email || !password || !name) {
-      setError('Please fill in all fields.');
+      setError("Please fill in all fields.");
       return;
     }
-    
+
     if (name.length < 3) {
-      setError('name must be at least 6 characters.');
+      setError("name must be at least 6 characters.");
       return;
     }
     if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+      setError("Password must be at least 6 characters.");
       return;
     }
-    console.log(e.target.value)
+    console.log(e.target.value);
 
-    alert(isLogin ? 'Logging in...' : 'Signing up...');
+    alert(isLogin ? "Logging in..." : "Signing up...");
   };
+
+  
 
   return (
     <div className="flex justify-center items-center  min-h-screen bg-[#F4F4F4]">
       <div className="bg-white shadow-xl rounded-lg w-full max-w-md form-container p-6 ">
         <h2 className="text-5xl font-bold text-center text-gray-800 mb-6">
-          {isLogin ? 'Login' : 'Sign Up'}
+          {isLogin ? "Login" : "Sign Up"}
         </h2>
 
         {/* Error Message */}
@@ -70,7 +71,9 @@ export default function AuthPage() {
           </div>
 
           <div className="mb-6">
-            <label className="text-md block text-gray-700 font-medium mb-2">Password</label>
+            <label className="text-md block text-gray-700 font-medium mb-2">
+              Password
+            </label>
             <input
               type="password"
               placeholder="Enter your password"
@@ -84,23 +87,26 @@ export default function AuthPage() {
             type="submit"
             className="w-full bg-blue-500 text-white p-2 rounded font-semibold hover:bg-blue-700 transition"
           >
-            {isLogin ? 'Login' : 'Sign Up'}
+            {isLogin ? "Login" : "Sign Up"}
           </button>
         </form>
 
         <div className="text-center mt-6">
-          <Link href="/forgot-password" className="text-blue-900 text-sm hover:underline">
+          <Link
+            href="/forgot-password"
+            className="text-blue-900 text-sm hover:underline"
+          >
             Forgot Password?
           </Link>
         </div>
 
         <div className="text-center mt-8 text-sm text-gray-700">
-          {isLogin ? "Don't have an account?" : "Already have an account?"} 
+          {isLogin ? "Don't have an account?" : "Already have an account?"}
           <button
             onClick={() => setIsLogin(!isLogin)}
             className="text-blue-800 font-semibold ml-1 hover:underline"
           >
-            {isLogin ? 'Sign Up' : 'Login'}
+            {isLogin ? "Sign Up" : "Login"}
           </button>
         </div>
       </div>
