@@ -4,15 +4,14 @@ const novelSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     author: { type: String, required: true },
-    genre: { type: String, required: true },
     publishedYear: { type: Number, required: true },
     synopsis: { type: String, required: true }, //description or summary of the novel
     rating: { type: Number, min: 0, max: 5 },
     type: {
-      type: String, enum: ['Light Novel', 'Web Novel', 'Chinese Novel', 'Korean Novel', 'Japanese Novel']
+      type: String, enum: ['Light Novel', 'Web Novel', 'Published', 'NA']
     },
     language: { type: String, enum: ['English', 'Chinese', 'Korean', 'Japanese'] },
-    tags: { type: [String] },
+    tags: { type: [String], required: true },
     chapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }]  
   },
   {
