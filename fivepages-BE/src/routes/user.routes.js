@@ -1,6 +1,6 @@
 import Router from 'express'
 import { body } from 'express-validator';
-import { createUser } from '../controllers/user.controllers.js';
+import { createUser, loginUser } from '../controllers/user.controllers.js';
 
 const router = Router();
 
@@ -14,8 +14,6 @@ router.post(
   createUser
 );
 
-router.get('/login', (req, res) => {
-  res.json({ message: 'Login route' });
-});
+router.get('/login', loginUser);
 
 export default router;

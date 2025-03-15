@@ -44,12 +44,12 @@ export const createUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!username && !email) {
-    return res.status(400).json({ "message": "username or email is required" });
+  if (!password && !email) {
+    return res.status(400).json({ "message": "username and password are required" });
   }
 
   const user = await User.findOne({
-    $or: [{ username }, { email }]
+    email
   })
 
   if (!user) {
@@ -82,7 +82,7 @@ export const loginUser = async (req, res) => {
     .cookie("accessToken", accessToken, options)
     .json(
       {
-        user: loggedInUser, accessToken, refreshToken,
+        user: loggedInUser, accessToken,
         "message": "User logged in successfully!"
       },
     )

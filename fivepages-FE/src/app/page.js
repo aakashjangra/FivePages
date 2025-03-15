@@ -5,7 +5,7 @@ import NovelPage from "./Components/noveldescription";
 export default function Home() {
   return (
     <div>
-      <Navbar />
+      {process.env.BASE_URL}
       <NovelPage/>
     </div>
   )
