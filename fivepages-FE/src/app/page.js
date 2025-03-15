@@ -1,11 +1,11 @@
-import Image from "next/image";
+
+import NovelPage from "./Components/noveldescription";
 
 export default function Home() {
   return (
     <div>
-      <div>
-      Home Page
-      </div>
+      {process.env.BASE_URL}
+      <NovelPage/>
     </div>
-  );
+  )
 }
