@@ -3,87 +3,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BookmarkCheck, BookmarkPlus, BookOpen, Heart } from "lucide-react";
-import styles from "./noveldescription.module.css";
-// new code
-// "use client";
-// import { useState } from "react";
-// import Link from "next/link";
-// import { useRouter } from "next/navigation";
-// import { BookmarkCheck, BookmarkPlus, BookOpen, Heart } from "lucide-react";
-// import styles from "./noveldescription.module.css";
+import styles from "./NovelDescription.module.css";
 
-// export default function NovelPage() {
-  // const novel = {
-  //   title: "Rebirth of the Supreme Celestial Being",
-  //   image: "/novel-cover.jpg", // Replace with actual image URL
-  //   author: "\u51B0\u7CD6\u83CC\u5B50\u7FB9",
-  //   totalChapters: 774,
-  //   publishedYear: 2021,
-  //   type: "Webnovel",
-  //   originalLanguage: "Chinese", 
-  //   tags: [
-  //     "Completed", "Doting Love Interest", "Fantasy", "Adventure", "mpreg",
-  //     "Rebirth", "Cultivation", "Second Chance", "Xianxia", "Happy Ending",
-  //   ],
-  //   synopsis:
-  //     "The genius cultivator Lin Xuanzhi didn’t let down the world in his past life, yet he only betrayed a single Yan Tianhen.",
-  //   chapters: [
-  //     { id: 1, title: "Memories from the Past" },
-  //     { id: 2, title: "Possessed" },
-  //     { id: 3, title: "Supervisor's Scheme" },
-  //   ],
-  //   recommended: [
-  //     "Heavenly Sword Sect", "Reincarnation of the Martial God", "Celestial Emperor's Return",
-  //   ],
-  // };
-
-  // const [newComment, setNewComment] = useState("");
-  // const [comments, setComments] = useState([]);
-  // const [isInReadList, setIsInReadList] = useState(false);
-  // const [isLiked, setIsLiked] = useState(false);
-
-  // const router = useRouter();
-
-  // const toggleReadList = () => {
-  //   setIsInReadList(!isInReadList);
-  //   alert(`${novel.title} ${isInReadList ? 'removed from' : 'added to'} Read List!`);
-  // };
-
-  // const toggleLike = () => {
-  //   setIsLiked(!isLiked);
-  //   alert(`${novel.title} ${isLiked ? 'removed from' : 'added to'} Liked Novels!`);
-  // };
-
-  // const readNow = () => {
-  //   router.push(`/chapter/1`);
-  // };
-
-  // return (
-    // <div className="flex justify-center items-center min-h-screen bg-[#F4F4F4] p-8">
-    //   <div className="w-full max-w-3xl p-10 bg-white shadow-md border border-gray-300 rounded-xl space-y-10">
-    //     <div className="flex gap-8">
-    //       <img src={novel.image} alt={novel.title} className="w-44 h-64 object-cover rounded-lg border border-gray-300" />
-    //       <div className="flex flex-col">
-    //         <h1 className="text-3xl font-bold text-gray-800">{novel.title}</h1>
-    //         <p className="text-gray-600 mt-3"><span className="font-semibold">Author:</span> {novel.author}</p>
-    //       </div>
-    //     </div>
-//         <div className="flex space-x-4 mt-4">
-//           <button onClick={readNow} className="px-4 py-2 flex gap-2 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-//             <BookOpen /> Start Reading
-//           </button>
-//           <button onClick={toggleReadList} className={`px-4 py-2 border flex gap-2 items-center rounded-lg transition ${isInReadList ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
-//             <BookmarkCheck /> {isInReadList ? "Added to Readlist" : "Add to Readlist"}
-//           </button>
-//           <button onClick={toggleLike} className={`px-4 py-2 transition ${isLiked ? 'text-red-500' : 'text-gray-800'}`}>
-//             <span className='text-2xl h-10 w-10'>{isLiked ? <Heart color="#bd0f0f" /> : <Heart />}</span>
-//           </button>
-//         </div>
-//   );
-// }
-
-
-// new code end
+// new code 
 export default function NovelPage() {
     const novel = {
     title: "Rebirth of the Supreme Celestial Being",
