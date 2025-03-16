@@ -32,22 +32,22 @@ export default function ChapterPage() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
 
-  // // re
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+//   // // re
+//   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-// <<<<<<< HEAD
-    useEffect(() => {
-      const user = localStorage.getItem('user'); 
-      if (!user) {
-        router.push('/login');
-      } else {
-        setIsAuthenticated(true);
-      }
-    }, []);
+// // <<<<<<< HEAD
+//     useEffect(() => {
+//       const user = localStorage.getItem('user'); 
+//       if (!user) {
+//         router.push('/login');
+//       } else {
+//         setIsAuthenticated(true);
+//       }
+//     }, []);
   
-    if (!isAuthenticated) {
-      return <p className="text-center text-gray-500 text-lg mt-10">Redirecting to login...</p>;
-    }
+//     if (!isAuthenticated) {
+//       return <p className="text-center text-gray-500 text-lg mt-10">Redirecting to login...</p>;
+//     }
 // =======
 //   useEffect(() => {
 //     // Simulate authentication check (Replace with actual logic)
