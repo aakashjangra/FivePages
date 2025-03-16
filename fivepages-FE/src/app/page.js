@@ -1,12 +1,14 @@
 
 // import Navbar from "./components/Navbar";
-import NovelPage from "./Components/noveldescription";
+import Dashboard from "./components/Dashboard/Dashboard";
+import NovelPage from "./components/NovelDescription/NovelDescription";
 
 export default function Home() {
   return (
     <div>
-      {process.env.BASE_URL}
-      <NovelPage/>
+      <Dashboard/>
+      {/* {process.env.BASE_URL}
+      <NovelPage/> */}
     </div>
   )
 }
