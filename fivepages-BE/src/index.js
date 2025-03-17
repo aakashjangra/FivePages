@@ -8,11 +8,12 @@ import likeRoutes from './routes/like.routes.js'
 
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-
-//loading environment variables
-import 'dotenv/config'
 import connectDB from './config/db.js';
 import { verifyJWT } from './middlewares/auth.middleware.js'
+
+//loading environment variables
+import dotenv from 'dotenv';
+dotenv.config({ path: './.env' }); // Load it globally
 
 const app = express()
 

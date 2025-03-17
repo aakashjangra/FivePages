@@ -15,7 +15,7 @@ router.get('/:id', getNovelByID);
 router.get('/:id/:count', getRecommendedNovels);
 
 // Create a new novel
-router.post('/', verifyJWT, upload.single('thumbnail'), createNovel);
+router.post('/', upload.single('thumbnail'), verifyJWT, createNovel);
 
 // Update a novel by ID
 // router.put('/:id', verifyJWT, getNovelByID);

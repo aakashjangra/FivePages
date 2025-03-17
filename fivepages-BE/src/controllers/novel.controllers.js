@@ -1,5 +1,6 @@
 import Novel from "../models/novel.models.js";
 import mongoose from 'mongoose';
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 //done 
 export const getNovels = async (req, res) => {
@@ -122,13 +123,21 @@ export const getNovelByID = async (req, res) => {
 //done and tested
 export const createNovel = async (req, res) => {  
 
-  const thumbnail = req.file? req.file.buffer : undefined;
+  const thumbnailLocalPath = req.file?.path;
 
   const { title, author, publishedYear, synopsis, rating, type, language, tags } = req.body;
 
   // Validate request body
-  if (!thumbnail || !req.body.title || !req.body.author || !req.body.publishedYear || !req.body.synopsis || !req.body.tags) {
+  if (!thumbnailLocalPath || !req.body.title || !req.body.author || !req.body.publishedYear || !req.body.synopsis || !req.body.tags) {
     return res.status(400).json({ message: 'Title, author, thumbnail file, tags and published year are required' });
+  }
+
+  console.log('localpath is - ', thumbnailLocalPath);
+  
+  const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+
+  if (!thumbnail?.url) {
+    return res.status(400).json("Error while uploading on cloudinary!");
   }
 
   // Check if novel already exists
@@ -142,7 +151,7 @@ export const createNovel = async (req, res) => {
       { 
         title, 
         author, 
-        thumbnail,
+        thumbnail: thumbnail.url,
         publishedYear, 
         synopsis, 
         rating: rating ? rating : 5, 
