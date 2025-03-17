@@ -1,6 +1,5 @@
-
-// import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard/Dashboard";
+import Footer from "./components/Footer/Footer";
 import NovelPage from "./components/NovelDescription/NovelDescription";
 
 export default function Home() {
@@ -9,6 +8,8 @@ export default function Home() {
       <Dashboard/>
       {/* {process.env.BASE_URL}
       <NovelPage/> */}
+    <Footer/>
     </div>
+
   )
 }
