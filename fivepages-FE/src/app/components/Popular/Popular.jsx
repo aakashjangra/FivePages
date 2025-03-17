@@ -1,26 +1,15 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function PopularBooks() {
-  const [books, setBooks] = useState([]);
+const PopularBooks = ({ books }) => {
   const router = useRouter();
-
-  useEffect(() => {
-    fetch("http://localhost:5000/api/popular-books")
-      .then((res) => res.json())
-      .then((data) => setBooks(data))
-      .catch((error) => console.error("Error fetching books:", error));
-  }, []);
 
   return (
     <section className="p-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold flex items-center">
-          <span className="text-green-600 text-3xl mr-2">▌</span> Popular Books 
+          <span className="text-green-600 text-3xl mr-2">▌</span> Popular Books
         </h2>
-        {/* Redirect to /popular page */}
         <button
           onClick={() => router.push("/popularbooks")}
           className="text-green-600 font-semibold text-sm hover:underline"
@@ -43,11 +32,15 @@ export default function PopularBooks() {
               <p className="text-green-600 font-bold text-sm">
                 {book.views.toLocaleString()} Views
               </p>
-              <p className="text-sm text-gray-600 line-clamp-3">{book.description}</p>
+              <p className="text-sm text-gray-600 line-clamp-3">
+                {book.description}
+              </p>
             </div>
           </div>
         ))}
       </div>
     </section>
   );
-}
+};
+
+export default PopularBooks;
