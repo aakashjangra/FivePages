@@ -18,7 +18,7 @@ router.get('/:id/:count', getRecommendedNovels);
 router.post('/', verifyJWT, upload.single('thumbnail'), createNovel);
 
 // Update a novel by ID
-router.put('/:id', verifyJWT, getNovelByID);
+// router.put('/:id', verifyJWT, getNovelByID);
 
 // Delete a novel by ID
 router.delete('/:id', verifyJWT, deleteNovel);
