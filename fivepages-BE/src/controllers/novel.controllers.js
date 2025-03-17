@@ -1,11 +1,76 @@
 import Novel from "../models/novel.models.js";
 import mongoose from 'mongoose';
 
-//done and tested
+//done 
 export const getNovels = async (req, res) => {
+  // NOTE: if the code doesn't work for optional field of count, use the commented code instead
+  
+  // const count = req?.boyd?.count ? parseInt(req.body.count): undefined;
+  const count = req?.body?.count ? parseInt(req.body.count): 0; // 0 means no limit
+
+
   try {
-    const novels = await Novel.find();
+    // if(!count){
+    //   const novels = await Novel.find();
+    //   res.status(200).json(novels);
+    // } else {
+    //   const novels = await Novel.find().limit(count);
+    //   res.status(200).json(novels);
+    // }
+    const novels = await Novel.find()
+      .limit(count)
+      .select('title author thumbnail');
+
     res.status(200).json(novels);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+//done 
+export const getRecommendedNovels = async (req, res) => {
+
+  const count = req.query?.count ? parseInt(req.query.count) : undefined; 
+  const novelID = req.query?.id;
+
+  if (!novelID || typeof novelID !== 'string' || !novelID.trim() || !mongoose.Types.ObjectId.isValid(novelID)) {
+    return res.status(400).json({ message: 'Novel ID is required' });
+  }
+
+  if(!count){
+    return res.status(400).json({
+      message: 'count is required!'
+    })
+  }
+
+  try {
+    const currentNovel = await Novel.findById(novelID);
+    const recommendedNovels = await Novel.aggregate([
+      {
+        $match: {
+          _id: { $ne: currentNovel._id },
+          tags: { $in: currentNovel.tags }
+        }
+      },
+      {
+        $addFields: {
+          similarityScore: {
+            $size: { $setIntersection: ["$tags", currentNovel.tags] }
+          }
+        }
+      },
+      { $sort: { similarityScore: -1 } }, // Higher similarity first
+      { $limit: count }, 
+      {
+        $project: {
+          title: 1,
+          author: 1,
+          thumbnail: 1
+        }
+      }
+    ]);
+
+    res.status(200).json(recommendedNovels);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -55,13 +120,15 @@ export const getNovelByID = async (req, res) => {
 }
 
 //done and tested
-export const createNovel = async (req, res) => {
+export const createNovel = async (req, res) => {  
+
+  const thumbnail = req.file? req.file.buffer : undefined;
 
   const { title, author, publishedYear, synopsis, rating, type, language, tags } = req.body;
 
   // Validate request body
-  if (!req.body.title || !req.body.author || !req.body.publishedYear || !req.body.synopsis || !req.body.tags) {
-    return res.status(400).json({ message: 'Title, author, tags and published year are required' });
+  if (!thumbnail || !req.body.title || !req.body.author || !req.body.publishedYear || !req.body.synopsis || !req.body.tags) {
+    return res.status(400).json({ message: 'Title, author, thumbnail file, tags and published year are required' });
   }
 
   // Check if novel already exists
@@ -72,7 +139,17 @@ export const createNovel = async (req, res) => {
 
   try {
     const novel = await Novel.create(
-      { title, author, publishedYear, synopsis, rating: rating ? rating : 5, type: type ? type : "NA", language: language ? language : "NA", tags}
+      { 
+        title, 
+        author, 
+        thumbnail,
+        publishedYear, 
+        synopsis, 
+        rating: rating ? rating : 5, 
+        type: type ? type : "NA", 
+        language: language ? language : "NA", 
+        tags
+      }
     );
     res.status(201).json(novel);
   } catch (err) {
