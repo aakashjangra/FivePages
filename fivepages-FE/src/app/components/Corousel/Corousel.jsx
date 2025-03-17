@@ -1,6 +1,6 @@
 "use client";
 
-// import "./Corousel.module.css"; // ✅ Renamed to avoid conflict
+import "./Corousel.module.css"; // ✅ Renamed to avoid conflict
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";

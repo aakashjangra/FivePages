@@ -6,9 +6,9 @@ import NovelPage from "./components/NovelDescription/NovelDescription";
 export default function Home() {
   return (
     <div>
-      <Dashboard/>
-      {/* {process.env.BASE_URL}
-      <NovelPage/> */}
+      {/* <Dashboard/>  */}
+      {process.env.BASE_URL}
+      <NovelPage/>
     </div>
   )
 }
