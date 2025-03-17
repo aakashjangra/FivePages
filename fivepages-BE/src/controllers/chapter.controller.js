@@ -23,6 +23,23 @@ export const createChapter = async (req, res) => {
   }
 }
 
+export const getLatestChapters = async (req, res) => {
+  const count = Number(req.query.count) || 10;
+
+  try {
+    const chapters = await Chapter.find()
+      .populate('novel', 'title author thumbnail')
+      .select('_id title chapterNumber updatedAt novel')
+      .sort({ createdAt: -1 })
+      .limit(count);
+
+    res.status(200).json(chapters);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 //done
 export const getAllChapters = async (req, res) => {
   const novelID = req.params.novelId;
