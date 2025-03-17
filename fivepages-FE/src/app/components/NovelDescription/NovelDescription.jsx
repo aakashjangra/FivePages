@@ -1,13 +1,14 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Link from "next/link";
 import { BookmarkCheck, BookOpen, Heart } from "lucide-react";
 import styles from "./NovelDescription.module.css";
 
 export default function NovelPage() {
   const router = useRouter();
   const { id } = useParams(); // Get the novel ID from the URL
+
+  // State Optimization using useState
   const [novel, setNovel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,8 +17,11 @@ export default function NovelPage() {
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState([]);
 
+  // Fetch novel data only when the ID changes
   useEffect(() => {
-    async function fetchNovel() {
+    if (!id) return;
+
+    const fetchNovel = async () => {
       try {
         const response = await fetch(`http://localhost:5000/api/novels/${id}`);
         if (!response.ok) throw new Error("Failed to fetch novel data.");
@@ -28,30 +32,38 @@ export default function NovelPage() {
       } finally {
         setLoading(false);
       }
-    }
-    if (id) fetchNovel();
+    };
+
+    fetchNovel();
   }, [id]);
 
-  const handleCommentSubmit = () => {
-    if (newComment.trim() !== "") {
-      setComments([...comments, { user: "You", time: "Just now", text: newComment }]);
-      setNewComment("");
-    }
-  };
+  // Memoize handlers using useCallback to avoid unnecessary re-renders
+  const handleCommentSubmit = useCallback(() => {
+    if (!newComment.trim()) return;
+    setComments((prev) => [...prev, { user: "You", time: "Just now", text: newComment }]);
+    setNewComment("");
+  }, [newComment]);
 
-  const toggleReadList = () => {
-    setIsInReadList(!isInReadList);
+  const toggleReadList = useCallback(() => {
+    setIsInReadList((prev) => !prev);
     alert(`${novel?.title} ${isInReadList ? "removed from" : "added to"} Read List!`);
-  };
+  }, [isInReadList, novel?.title]);
 
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
+  const toggleLike = useCallback(() => {
+    setIsLiked((prev) => !prev);
     alert(`${novel?.title} ${isLiked ? "removed from" : "added to"} Liked Novels!`);
-  };
+  }, [isLiked, novel?.title]);
 
-  const readNow = () => {
+  const readNow = useCallback(() => {
     router.push(`/chapter/1`);
-  };
+  }, [router]);
+
+  // Memoized Novel Tags for performance
+  const novelTags = useMemo(() => (
+    novel?.tags?.map((tag, index) => (
+      <span key={index} className="px-5 py-3 bg-[#E3EAFD] text-[#4A5B94] rounded-full text-sm">{tag}</span>
+    ))
+  ), [novel?.tags]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -89,9 +101,7 @@ export default function NovelPage() {
 
         {/* Tags */}
         <div className="mt-8 flex flex-wrap gap-5">
-          {novel.tags.map((tag, index) => (
-            <span key={index} className="px-5 py-3 bg-[#E3EAFD] text-[#4A5B94] rounded-full text-sm">{tag}</span>
-          ))}
+          {novelTags}
         </div>
 
         {/* Synopsis */}
