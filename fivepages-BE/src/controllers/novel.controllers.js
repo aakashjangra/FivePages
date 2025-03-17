@@ -23,6 +23,22 @@ export const searchNovels = async (req, res) => {
   return res.status(400).json({ data: novels });
 }
 
+export const getLatestNovels = async (req, res) => {
+  const count = Number(req.query.count) || 10;
+
+  try {
+    const novels = await Novel.find()
+      .select('_id title author thumbnail createdAt')
+      .sort({ createdAt: -1 })
+      .limit(count);
+
+    res.status(200).json(novels);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 //done 
 export const getNovels = async (req, res) => {
   // NOTE: if the code doesn't work for optional field of count, use the commented code instead

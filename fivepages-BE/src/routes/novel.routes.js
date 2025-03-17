@@ -1,4 +1,4 @@
-import { createNovel, deleteNovel, getNovelByID, getNovels, getRecommendedNovels, searchNovels } from '../controllers/novel.controllers.js';
+import { createNovel, deleteNovel, getLatestNovels, getNovelByID, getNovels, getRecommendedNovels, searchNovels } from '../controllers/novel.controllers.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 import { upload } from '../middlewares/multer.middleware.js';
 import Novel from '../models/novel.models.js';
@@ -8,6 +8,9 @@ const router = Router();
 
 // Get all novels
 router.get('/', getNovels);
+
+//latest novels, recent updates
+router.get('/latest', getLatestNovels);
 
 //search novels
 router.get('/search/:param', searchNovels);
