@@ -30,7 +30,7 @@ export default function PopularBooks() {
       </div>
 
       <div className="grid grid-cols-3 gap-6 mt-6">
-        {books.slice(0, 6).map((book, index) => (
+        {books.slice(0, 5).map((book, index) => (
           <div key={index} className="flex gap-4">
             <img
               src={book.image}

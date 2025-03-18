@@ -11,7 +11,7 @@ const NewReleases = ({ books }) => {
           <span className="text-green-600 text-3xl mr-2">▌</span> New Releases
         </h2>
         <button
-          onClick={() => router.push("/new-releases")}
+          onClick={() => router.push("/new-releases-page")}
           className="text-green-600 font-semibold text-sm hover:underline"
         >
           See More →

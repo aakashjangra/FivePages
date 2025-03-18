@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { fetchPopularBooks, fetchNewReleases } from "../../utlis/api";
 import CarouselComponent from "../Corousel/CarouselComponent";
-import PopularBooks from "@/app/popularbooks/page";
+import PopularBooks from "../Popular/Popular";
 import NewReleases from "../NewRealease/NewRelease";
 
 
