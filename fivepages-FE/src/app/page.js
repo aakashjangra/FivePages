@@ -5,10 +5,12 @@ import NovelDescription from "./components/NovelDescription/NovelDescription";
 export default function Home() {
   return (
     <div>
+
       <Navbar/>
       {/* <Dashboard /> */}
       <NovelDescription/>
       <Footer />
+
     </div>
   );
 }
