@@ -44,7 +44,7 @@ app.use('/api/v1/like', verifyJWT, likeRoutes);
 app.use('/api/v1/comments', verifyJWT, commentRoutes);
 
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`)
