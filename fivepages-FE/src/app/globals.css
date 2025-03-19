@@ -6,3 +6,10 @@
   box-sizing: border-box;
   font-family: "Karla", sans-serif;
 }
+
+.redHeart > svg {
+    
+  fill: rgb(189, 15, 15) !important; 
+  
+
+}
