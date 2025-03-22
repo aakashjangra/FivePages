@@ -42,7 +42,7 @@ const Navbar = () => {
             New Release
           </Link>
         </li>
-        {/* <li><Link href="/Join-us" className="text-black font-medium hover:text-blue-700">Join Us</Link></li> */}
+        <li><Link href="/allnovels" className="text-black font-medium hover:text-blue-700">Novels</Link></li>
       </ul>
 
       {/* Right Section */}

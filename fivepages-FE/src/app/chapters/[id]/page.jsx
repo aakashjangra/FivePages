@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { Select } from "@headlessui/react";
 
 export default function ChapterPage() {
   const router = useRouter();
@@ -25,7 +26,9 @@ export default function ChapterPage() {
   useEffect(() => {
     const fetchChapters = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/v1/chapters/${id}`);
+        const response = await fetch(
+          `http://localhost:5000/api/v1/chapters/${id}`
+        );
 
         const data = await response.json();
         console.log("API Response:", data); // Debug log
@@ -33,7 +36,6 @@ export default function ChapterPage() {
         if (!response.ok)
           throw new Error(data.message || "Failed to fetch chapters data.");
 
-        
         setChapters(data); // Store the array of chapters
         // console.log(data);
       } catch (error) {
@@ -61,11 +63,22 @@ export default function ChapterPage() {
       <h1 className="text-3xl font-extrabold text-[#4A90E2] text-center">
         Rebirth of the Supreme Celestial Being
       </h1>
+      
+      <div className="AllChapters text-xl font-semibold text-gray-800 mt-4 text-center border-none">
+      <Select className=" border py-2 px-18 rounded border-none ">
+        <option value="chapter 1">Chapter 1</option>
+        <option value="chapter 2">Chapter 2</option>
+        <option value="chapter 3">Chapter 3</option>
+        <option value="chapter 4">Chapter 4</option>
+        <option value="chapter 5">Chapter 5</option>
+      </Select>
+    </div>
+      
       <h2 className="text-2xl font-semibold text-gray-800 mt-4">
-        {chapters.title} 
+        {chapters.title}
       </h2>
       <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-        {chapters.content} 
+        {chapters.content}
       </p>
 
       {/* Navigation */}
