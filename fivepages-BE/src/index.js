@@ -24,7 +24,7 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: "http://localhost:3000", // ✅ Set specific allowed origin
+  origin: "http://localhost:3003", // ✅ Set specific allowed origin
   credentials: true,
 }));
 
@@ -48,7 +48,7 @@ app.use('/api/v1/like', verifyJWT, likeRoutes);
 app.use('/api/v1/comments', verifyJWT, commentRoutes);
 
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`)
