@@ -21,7 +21,7 @@ const CarouselComponent = ({ books }) => {
   };
 
   return (
-    <div className="w-full my-4 bg-white">
+    <div className="w-full my-4 bg-white p-4">
       
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
@@ -38,7 +38,7 @@ const CarouselComponent = ({ books }) => {
         className="rounded-lg shadow-lg"
       >
         {books.map((book, index) => (
-          <SwiperSlide key={index} className="p-4">
+          <SwiperSlide key={index} className="p-4 my-4">
             <button onClick={() => router.push(`/novels/${book._id}`)}>
             <img
              onClick={() => handleClick(book._id)}

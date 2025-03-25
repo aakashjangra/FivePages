@@ -33,7 +33,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="mx-32 flex flex-col min-h-screen">
+    <div className="lg:mx-32 mx-25px flex flex-col min-h-screen">
       {loading ? (
         <p className="text-center text-lg my-4">Loading...</p>
       ) : error ? (

@@ -23,9 +23,10 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between px-45 bg-white shadow-md mb-2">
+    <nav className="flex items-center justify-between lg:px-31 px-10 bg-white shadow-md mb-2">
       {/* Logo */}
       <div className="">
+        {/* <p className="text-3xl font-bold">FivePages</p> */}
         <Image
           src="/fivepagelogo.png"
           alt="Fivepages Logo"
@@ -36,7 +37,7 @@ const Navbar = () => {
       </div>
 
       {/* Navigation Links */}
-      <ul className="flex gap-6 list-none ">
+      <ul className="flex gap-4 list-none ">
         <li>
           <Link href="/" className="text-black font-medium hover:text-blue-700">
             Home
@@ -69,13 +70,13 @@ const Navbar = () => {
       </ul>
 
       {/* Right Section */}
-      <div className="flex items-center gap-8 ">
+      <div className="flex items-center lg:gap-8 gap-4 ">
         {/* Search Box */}
-        <div className="flex items-center  border border-gray-400 rounded-md px-3 py-1">
+        <div className="flex items-center border border-gray-400 rounded-md px-3 py-[0.32rem]">
           <input
             type="text"
             placeholder="Search"
-            className="outline-none text-sm text-gray-700 px-2"
+            className="outline-none text-sm text-gray-700 px-2 w-[8rem]"
           />
           <FaSearch className="text-blue-700" />
         </div>
