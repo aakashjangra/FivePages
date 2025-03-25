@@ -21,7 +21,7 @@ const CarouselComponent = ({ books }) => {
   };
 
   return (
-    <div className="w-full my-4">
+    <div className="w-full my-4 bg-white">
       
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}

@@ -7,6 +7,9 @@
   font-family: "Karla", sans-serif;
 }
 
+body{
+  background: #f5f1f1;
+}
 .redHeart > svg {
     
   fill: rgb(189, 15, 15) !important; 

@@ -4,8 +4,24 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaSearch, FaUserCircle } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
+
+  const handleSelectChange = (event) => {
+    const selectedValue = event.target.value;
+
+    if(selectedValue === "register"){
+      router.push('/login');
+    }
+    
+    if(selectedValue === "profile"){
+      router.push('/profile');
+    }
+
+  };
+
   return (
     <nav className="flex items-center justify-between px-45 bg-white shadow-md mb-2">
       {/* Logo */}
@@ -42,7 +58,14 @@ const Navbar = () => {
             New Release
           </Link>
         </li>
-        <li><Link href="/allnovels" className="text-black font-medium hover:text-blue-700">Novels</Link></li>
+        <li>
+          <Link
+            href="/allnovels"
+            className="text-black font-medium hover:text-blue-700"
+          >
+            Novels
+          </Link>
+        </li>
       </ul>
 
       {/* Right Section */}
@@ -60,11 +83,18 @@ const Navbar = () => {
         {/* Profile Icon */}
         <div className="flex ">
           <FaUserCircle className="text-2xl text-black cursor-pointer hover:text-700 transition s" />
-          <select name="Profile" id="" className="focus:border-none ">
-            <option className="">
+          <select
+            name="Profile"
+            id="profile-dropdown"
+            className="focus:outline-none "
+            onChange={handleSelectChange}
+          >
+            <option value="profile" className="bg-white">
               Profile
             </option>
-            <option className="">Register</option>
+            <option value="register" className="bg-white">
+              Register
+            </option>
           </select>
         </div>
       </div>

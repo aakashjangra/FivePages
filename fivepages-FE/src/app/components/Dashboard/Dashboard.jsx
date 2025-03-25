@@ -13,7 +13,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/v1/novels/latest");
+        const response = await fetch(
+          "http://localhost:5000/api/v1/novels/latest"
+        );
         if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
         const data = await response.json();

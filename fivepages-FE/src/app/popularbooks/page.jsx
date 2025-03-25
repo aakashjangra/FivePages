@@ -17,8 +17,8 @@ export default function PopularBooks() {
 
   return (
     <>
-      <Navbar />
-      <section className="p-6">
+      
+      <section className="p-6 bg-white">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold flex items-center">
             <span className="text-blue-600 text-3xl mr-2">▌</span> Popular Books

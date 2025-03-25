@@ -17,7 +17,7 @@ export default function NewReleasesPage() {
 
   return (
   <>
- < Navbar/>
+
     <section className="p-6">
       <h2 className="text-4xl font-bold text-center mb-6">New Releases</h2>
 
