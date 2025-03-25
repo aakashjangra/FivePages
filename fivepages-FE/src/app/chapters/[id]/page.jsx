@@ -37,7 +37,9 @@ export default function ChapterPage() {
           throw new Error(data.message || "Failed to fetch chapters data.");
 
         setChapters(data); // Store the array of chapters
-        // console.log(data);
+        console.log(data.content);
+        data.content = data.content.replace(/\n/g, "<br>");
+
       } catch (error) {
         console.error("Error fetching chapters:", error);
       }
@@ -46,6 +48,7 @@ export default function ChapterPage() {
     if (id) fetchChapters();
   }, [id]);
 
+  
   // if (!isAuthenticated) {
   //   return <p className="text-center text-gray-500 text-lg mt-10">Redirecting to login...</p>;
   // }
@@ -77,9 +80,8 @@ export default function ChapterPage() {
       <h2 className="text-2xl font-semibold text-gray-800 mt-4">
         {chapters.title}
       </h2>
-      <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-        {chapters.content}
-      </p>
+      <p className="mt-4 text-lg text-gray-700 "    dangerouslySetInnerHTML={{ __html: chapters.content }}/>
+      
 
       {/* Navigation */}
       <div className="flex justify-between my-6">

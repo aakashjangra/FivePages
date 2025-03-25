@@ -101,7 +101,7 @@ export default function NovelPage() {
             </p>
             <p className="text-gray-600 mt-3">
               <span className="font-semibold">Total Chapters:</span>{" "}
-              {novel.totalChapters}
+              {novel.chapters?.length}
             </p>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function NovelPage() {
           </button>
           <button
             onClick={toggleLike}
-            className={`px-4 py-2 transition ${
+            className={ `redHeart px-4 py-2 transition ${
               isLiked ? "text-red-500" : "text-gray-800"
             }`}
           >
