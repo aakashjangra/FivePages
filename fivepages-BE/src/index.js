@@ -47,6 +47,8 @@ app.use('/api/v1/like', verifyJWT, likeRoutes);
 
 app.use('/api/v1/comments', verifyJWT, commentRoutes);
 
+// admin api bani s 
+
 
 const PORT = process.env.PORT || 5000
 

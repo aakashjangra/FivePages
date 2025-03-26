@@ -31,7 +31,7 @@ export const getLatestNovels = async (req, res) => {
       .select("_id title author thumbnail createdAt")
       .sort({ createdAt: -1 })
       .limit(count);
-    console.log(novels);
+    // console.log(novels);
     res.status(200).json(novels);
   } catch (error) {
     res.status(500).json({ message: error.message });

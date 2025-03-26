@@ -7,21 +7,20 @@ import { Select } from "@headlessui/react";
 export default function ChapterPage() {
   const router = useRouter();
   const { id } = useParams(); // ✅ Extract the correct novel ID
-  console.log(useParams());
 
   const [chapters, setChapters] = useState(); // Store an array of chapters
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // useEffect(() => {
-  //   const user = localStorage.getItem("user");
-  //   console.log(user);
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    console.log(user);
 
-  //   // if (!user) {
-  //   //   router.push('/login');
-  //   // } else {
-  //   //   setIsAuthenticated(true);
-  //   // }
-  // }, []);
+    if (!user) {
+      router.push("/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchChapters = async () => {
@@ -37,9 +36,8 @@ export default function ChapterPage() {
           throw new Error(data.message || "Failed to fetch chapters data.");
 
         setChapters(data); // Store the array of chapters
-        console.log(data.content);
+        // console.log(data.content);
         data.content = data.content.replace(/\n/g, "<br>");
-
       } catch (error) {
         console.error("Error fetching chapters:", error);
       }
@@ -48,10 +46,13 @@ export default function ChapterPage() {
     if (id) fetchChapters();
   }, [id]);
 
-  
-  // if (!isAuthenticated) {
-  //   return <p className="text-center text-gray-500 text-lg mt-10">Redirecting to login...</p>;
-  // }
+  if (!isAuthenticated) {
+    return (
+      <p className="text-center text-gray-500 text-lg mt-10">
+        Redirecting to login...
+      </p>
+    );
+  }
 
   if (!chapters) {
     return (
@@ -62,33 +63,24 @@ export default function ChapterPage() {
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto bg-white shadow-md rounded-lg border border-gray-200">
-      <h1 className="text-3xl font-extrabold text-[#4A90E2] text-center">
-        Rebirth of the Supreme Celestial Being
+    <div className="my-10 px-12 py-18 max-w-3xl mx-auto bg-white shadow-md rounded-lg border border-gray-200   ">
+      <h1 className="text-4xl font-bold text-center content-container ">
+        Chapter 1
       </h1>
-      
-      <div className="AllChapters text-xl font-semibold text-gray-800 mt-4 text-center border-none">
-      <Select className=" border py-2 px-18 rounded border-none ">
-        <option value="chapter 1">Chapter 1</option>
-        <option value="chapter 2">Chapter 2</option>
-        <option value="chapter 3">Chapter 3</option>
-        <option value="chapter 4">Chapter 4</option>
-        <option value="chapter 5">Chapter 5</option>
-      </Select>
-    </div>
-      
-      <h2 className="text-2xl font-semibold text-gray-800 mt-4">
+      <h2 className="content-container text-3xl font-bold text-gray-800 mt-4 select-none">
         {chapters.title}
       </h2>
-      <p className="mt-4 text-lg text-gray-700 "    dangerouslySetInnerHTML={{ __html: chapters.content }}/>
-      
+      <p
+        className="content-container mt-6 text-lg text-gray-700 select-none "
+        dangerouslySetInnerHTML={{ __html: chapters.content }}
+      />
 
       {/* Navigation */}
       <div className="flex justify-between my-6">
         {chapters.id > 1 ? (
           <Link
             href={`/chapter/${chapter.id - 1}`}
-            className="px-4 py-2 bg-[#E3E8F0] rounded-lg hover:bg-[#D4DBE8] transition"
+            className="px-4 py-2 bg-[#E3E8F0] rounded-lg hover:bg-[#D4DBE8] transition "
           >
             &larr; Prev
           </Link>
@@ -106,7 +98,7 @@ export default function ChapterPage() {
             Next &rarr;
           </Link>
         ) : (
-          <span className="px-4 py-2 bg-gray-200 rounded-lg opacity-50 pointer-events-none">
+          <span className="px-4 py-2 bg-gray-200 rounded-lg opacity-50 pointer-events-none ">
             Next &rarr;
           </span>
         )}

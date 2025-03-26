@@ -12,14 +12,13 @@ const Navbar = () => {
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
 
-    if(selectedValue === "register"){
-      router.push('/login');
-    }
-    
-    if(selectedValue === "profile"){
-      router.push('/profile');
+    if (selectedValue === "register") {
+      router.push("/login");
     }
 
+    if (selectedValue === "profile") {
+      router.push("/profile");
+    }
   };
 
   return (
@@ -27,12 +26,10 @@ const Navbar = () => {
       {/* Logo */}
       <div className="">
         {/* <p className="text-3xl font-bold">FivePages</p> */}
-        <Image
+        <img
           src="/fivepagelogo.png"
-          alt="Fivepages Logo"
-          width={100}
-          height={100}
-          className=""
+          alt="Logo"
+          className="w-36 h-auto"
         />
       </div>
 

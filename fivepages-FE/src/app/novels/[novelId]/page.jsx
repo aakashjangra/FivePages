@@ -87,7 +87,7 @@ export default function NovelPage() {
               <span className="font-semibold">Author:</span> {novel.author}
             </p>
             <p className="text-gray-600 mt-3">
-              <span className="font-semibold">Language</span> {novel.language}
+              <span className="font-semibold">Language: </span> {novel.language}
             </p>
             <p className="text-gray-600 mt-3">
               <span className="font-semibold">PublishedYear:</span>{" "}
@@ -110,13 +110,13 @@ export default function NovelPage() {
         <div className="flex space-x-4 mt-4">
           <button
             onClick={readNow}
-            className="px-4 py-2 flex gap-2 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            className="cursor-pointer px-4 py-2 flex gap-2 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
           >
             <BookOpen /> Start Reading
           </button>
           <button
             onClick={toggleReadList}
-            className={`px-4 py-2 border flex gap-2 items-center rounded-lg transition ${
+            className={`cursor-pointer px-4 py-2 border flex gap-2 items-center rounded-lg transition ${
               isInReadList
                 ? "bg-green-500 text-white"
                 : "bg-gray-200 text-gray-800"
@@ -127,7 +127,7 @@ export default function NovelPage() {
           </button>
           <button
             onClick={toggleLike}
-            className={ `redHeart px-4 py-2 transition ${
+            className={`cursor-pointer redHeart px-4 py-2 transition 2s ${
               isLiked ? "text-red-500" : "text-gray-800"
             }`}
           >
@@ -135,10 +135,11 @@ export default function NovelPage() {
           </button>
         </div>
 
+
         {/* Synopsis */}
-        <div className="space-y-4">
+        <div className="space-y-4 ">
           <h2 className="text-xl font-semibold text-gray-800">Synopsis</h2>
-          <p className="text-sm text-gray-700 ">{novel.synopsis}</p>
+          <p className=" text-gray-700 ">{novel.synopsis}</p>
         </div>
 
         {/* Chapters */}
@@ -167,13 +168,13 @@ export default function NovelPage() {
             Leave a Comment
           </h2>
           <textarea
-            className="w-full p-5 border border-gray-300 rounded-lg"
+            className="w-full p-5 border border-gray-300 rounded-lg "
             placeholder="Write your comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
           ></textarea>
           <button
-            className="px-6 py-4 bg-blue-500 hover:bg-blue-700 text-white rounded-lg"
+            className="cursor-pointer px-6 py-4 bg-blue-500 hover:bg-blue-700 text-white rounded-lg"
             onClick={toggleLike}
           >
             Post Comment

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -12,6 +12,7 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Refs for input fields
   const emailRef = useRef(null);
@@ -27,6 +28,15 @@ export default function AuthPage() {
       }
     }
   };
+
+  // Check user authentication status on component mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setIsAuthenticated(true);
+      router.push("/"); // Redirect to home if already authenticated
+    }
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,7 +68,11 @@ export default function AuthPage() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, ...(isLogin ? {} : { name }) }),
+          body: JSON.stringify({
+            email,
+            password,
+            ...(isLogin ? {} : { name }),
+          }),
         }
       );
 
@@ -67,14 +81,16 @@ export default function AuthPage() {
       if (!response.ok) {
         setError(data.message || "Something went wrong!");
       } else {
-        console.log("User Info:", data); // ✅ Prints user info after success
+        // Save user info to localStorage
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setIsAuthenticated(true);
 
-        // ✅ Clear input fields
+        // Clear input fields
         setEmail("");
         setPassword("");
         setName("");
 
-        // ✅ Redirect to Home Page
+        // Redirect to Home Page
         router.push("/");
       }
     } catch (err) {
@@ -157,7 +173,10 @@ export default function AuthPage() {
         </form>
 
         <div className="text-center mt-6">
-          <Link href="/forgot-password" className="text-blue-900 text-sm hover:underline">
+          <Link
+            href="/forgot-password"
+            className="text-blue-900 text-sm hover:underline"
+          >
             Forgot Password?
           </Link>
         </div>
