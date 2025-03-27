@@ -22,3 +22,9 @@ export const verifyJWT = async (req, res, next) => {
     res.status(401).json({ "message": error.message || "Unauthorized request" });
   }
 }
+
+export const verifyAdmin = async (req, res, next) => {
+  if (!req.user.admin) {
+    return res.status(403).json({ message: 'Admin access only!' });
+  }
+}

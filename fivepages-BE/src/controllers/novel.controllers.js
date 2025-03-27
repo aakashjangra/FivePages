@@ -169,8 +169,6 @@ export const createNovel = async (req, res) => {
     return res.status(400).json({ message: 'Title, author, thumbnail file, tags and published year are required' });
   }
 
-  console.log('localpath is - ', thumbnailLocalPath);
-
   const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
 
   if (!thumbnail?.url) {
