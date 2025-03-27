@@ -1,5 +1,5 @@
 import { createNovel, deleteNovel, getLatestNovels, getNovelByID, getNovels, getRecommendedNovels, searchNovels } from '../controllers/novel.controllers.js';
-import { verifyJWT } from '../middlewares/auth.middleware.js';
+import { verifyAdmin, verifyJWT } from '../middlewares/auth.middleware.js';
 import { upload } from '../middlewares/multer.middleware.js';
 import Novel from '../models/novel.models.js';
 import Router from 'express';
@@ -21,7 +21,7 @@ router.get('/:id', getNovelByID);
 router.get('/:id/:count', getRecommendedNovels);
 
 // Create a new novel
-router.post('/', upload.single('thumbnail'), verifyJWT, createNovel);
+router.post('/', upload.single('thumbnail'), verifyJWT, verifyAdmin, createNovel);
 
 // Update a novel by ID
 // router.put('/:id', verifyJWT, getNovelByID);

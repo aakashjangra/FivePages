@@ -199,8 +199,6 @@ export const createNovel = async (req, res) => {
     });
   }
 
-  console.log("localpath is - ", thumbnailLocalPath);
-
   const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
 
   if (!thumbnail?.url) {
