@@ -10,6 +10,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import connectDB from './config/db.js';
 import { verifyJWT } from './middlewares/auth.middleware.js'
+import morgan from 'morgan'
 
 //loading environment variables
 import dotenv from 'dotenv';
@@ -27,6 +28,9 @@ app.use(cors({
   origin: "http://localhost:3000", // ✅ Set specific allowed origin
   credentials: true,
 }));
+
+const customFormat = ":method :url :status :res[content-length] - :response-time ms";
+app.use(morgan(customFormat))
 
 app.use(cookieParser())
 

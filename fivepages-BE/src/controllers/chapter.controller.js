@@ -14,9 +14,9 @@ export const createChapter = async (req, res) => {
 
     const existingChapter = await Chapter.findOne({ novel: novelId, chapterNumber });
 
-    if(existingChapter) {
+    if (existingChapter) {
       return res.status(400).json({ message: 'Chapter number already exists' });
-    } 
+    }
 
     // Create chapter
     const chapter = await Chapter.create({ novel: novelId, chapterNumber, title: title ? title : "", content });
@@ -29,6 +29,61 @@ export const createChapter = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 }
+
+//done  and tested
+export const updateChapter = async (req, res) => {
+  const chapterID = req.params.id;
+  const { title, novelID, chapterNumber, content } = req.body;
+
+  // console.log(chapterID, title, chapterNumber, content)
+
+  if (!novelID || typeof novelID !== 'string' || !novelID.trim() || !mongoose.Types.ObjectId.isValid(novelID)) {
+    return res.status(400).json({ message: 'novelID is required!' });
+  }
+
+  if (!chapterID || typeof chapterID !== 'string' || !chapterID.trim() || !mongoose.Types.ObjectId.isValid(chapterID)) {
+    return res.status(400).json({ message: 'Invalid chapter ID' });
+  }
+
+  
+
+  if (!content && !title && !chapterNumber) {
+    return res.status(400).json({ message: 'Content, title or chapterNumber is required' });
+  }
+
+  // Check if the chapterNumber already exists for the same novel
+  const chapterWithChapterNumber = await Chapter.findOne({ chapterNumber, novel: novelID});
+
+  if (chapterWithChapterNumber && chapterWithChapterNumber._id.toString() !== chapterID ) {
+    return res.status(400).json({ message: 'Chapter number already exists' });
+  }
+
+  
+   
+  
+  try {
+
+    const exixtingChapter = await Chapter.findById(chapterID);
+    if (!exixtingChapter) {
+      return res.status(404).json({ message: 'Chapter not found' });
+    }
+
+    const updateData = {};
+    if (title !== undefined) updateData.title = title;
+    if (content !== undefined) updateData.content = content;
+    if (chapterNumber !== undefined) updateData.chapterNumber = chapterNumber;
+
+    const updatedChapter = await Chapter.findByIdAndUpdate(
+      chapterID,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json(updatedChapter);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 export const getLatestChapters = async (req, res) => {
   const count = Number(req.query.count) || 10;
@@ -82,3 +137,29 @@ export const getChapterByID = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
+
+export const deleteChapter = async (req, res) => {
+  const chapterID = req.params.id;
+
+  if (!chapterID || typeof chapterID !== 'string' || !chapterID.trim() || !mongoose.Types.ObjectId.isValid(chapterID)) {
+    return res.status(400).json({ message: 'Invalid chapter ID' });
+  }
+
+  try {
+    const chapter = await Chapter.findById(chapterID);
+
+    if (!chapter) {
+      return res.status(404).json({ message: 'Chapter not found' });
+    }
+
+    // Remove chapter reference from the novel
+    await Novel.findByIdAndUpdate(chapter.novel, { $pull: { chapters: chapterID } });
+
+    // Delete the chapter
+    const deletedChapter = await Chapter.findByIdAndDelete(chapterID);
+
+    res.status(200).json({ message: 'Chapter deleted successfully', deletedChapter });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
