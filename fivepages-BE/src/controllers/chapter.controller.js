@@ -11,6 +11,13 @@ export const createChapter = async (req, res) => {
   }
 
   try {
+
+    const existingChapter = await Chapter.findOne({ novel: novelId, chapterNumber });
+
+    if(existingChapter) {
+      return res.status(400).json({ message: 'Chapter number already exists' });
+    } 
+
     // Create chapter
     const chapter = await Chapter.create({ novel: novelId, chapterNumber, title: title ? title : "", content });
 
