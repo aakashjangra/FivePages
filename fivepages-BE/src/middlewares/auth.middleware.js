@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 import User from '../models/user.models.js';
 
 export const verifyJWT = async (req, res, next) => {
@@ -6,20 +6,20 @@ export const verifyJWT = async (req, res, next) => {
     const token = req.cookies?.accessToken || req.header('Authorization')?.replace("Bearer ", "");
 
     if (!token) {
-      res.status(401).json({"message": "Unauthorized request"});
+      return res.status(401).json({ "message": "Unauthorized request" });
     }
 
     const decodedInfo = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     const user = await User.findById(decodedInfo?._id).select("-password -refreshToken");
 
     if (!user) {
-      res.status(401).json({ "message": "Invalid Access Token" });
+      return res.status(401).json({ "message": "Invalid Access Token" });
     }
 
     req.user = user;
-    next();
+    next();  // ✅ Call next only once after validation
   } catch (error) {
-    res.status(401).json({ "message": error.message || "Unauthorized request" });
+    return res.status(401).json({ "message": error.message || "Unauthorized request" });
   }
 }
 

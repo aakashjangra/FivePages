@@ -15,5 +15,9 @@ router.post(
 );
 
 router.get('/login', loginUser);
+router.post('/login', loginUser);
+
+// forget password ki api bnani s
+// logout ki bhi 
 
 export default router;

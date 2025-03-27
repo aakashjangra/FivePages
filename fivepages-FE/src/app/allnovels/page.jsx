@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar/Navbar";
 
-export default function PopularBooks() {
+export default function AllNovels() {
   const [books, setBooks] = useState([]);
   const router = useRouter();
 
@@ -17,15 +17,15 @@ export default function PopularBooks() {
 
   return (
     <>
-      
+  
       <section className="p-6 bg-white">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold flex items-center">
-            <span className="text-blue-600 text-3xl mr-2">▌</span> Popular Books
+            <span className="text-blue-600 text-3xl mr-2">▌</span>Novels
           </h2>
         </div>
 
-        <div className="grid grid-cols-4 gap-6 mt-6 shadow-lg p-6">
+        <div className="grid grid-cols-4 gap-6 mt-6  p-6">
           {books.slice(0, 5).map((book, index) => (
             <div key={index} className="flex gap-4 shadow-lg rounded">
               {/* Clickable image */}

@@ -23,7 +23,11 @@ connectDB();
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:3000", // ✅ Set specific allowed origin
+  credentials: true,
+}));
+
 app.use(cookieParser())
 
 app.get('/api/v1/', (request, response) => {
@@ -43,8 +47,10 @@ app.use('/api/v1/like', verifyJWT, likeRoutes);
 
 app.use('/api/v1/comments', verifyJWT, commentRoutes);
 
+// admin api bani s 
 
-const PORT = process.env.PORT || 3000
+
+const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`)

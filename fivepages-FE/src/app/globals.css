@@ -6,3 +6,22 @@
   box-sizing: border-box;
   font-family: "Karla", sans-serif;
 }
+
+body{
+  background: #f5f1f1;
+  user-select: none;
+}
+.redHeart > svg {
+    
+  fill: rgb(189, 15, 15) !important; 
+  
+}
+
+.content-container {
+  font-family: __Lora_54761c, __Lora_Fallback_54761c;
+ 
+}
+.chapter-container {
+  font-weight: 600;
+ 
+}

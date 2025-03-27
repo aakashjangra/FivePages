@@ -1,44 +1,110 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function AuthPage() {
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleSubmit = (e) => {
+  // Refs for input fields
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const nameRef = useRef(null);
+
+  // Handle Enter Key Navigation
+  const handleKeyDown = (e, nextRef) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent form submission
+      if (nextRef?.current) {
+        nextRef.current.focus(); // Move focus to the next field
+      }
+    }
+  };
+
+  // Check user authentication status on component mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setIsAuthenticated(true);
+      router.push("/"); // Redirect to home if already authenticated
+    }
+  }, [router]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (!email || !password || !name) {
+    // Validation
+    if (!email || !password || (!isLogin && !name)) {
       setError("Please fill in all fields.");
       return;
     }
 
-    if (name.length < 3) {
-      setError("name must be at least 6 characters.");
+    if (!isLogin && name.length < 3) {
+      setError("Name must be at least 3 characters.");
       return;
     }
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters.");
       return;
     }
-    console.log(e.target.value);
 
-    alert(isLogin ? "Logging in..." : "Signing up...");
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        isLogin
+          ? "http://localhost:5000/api/v1/user/login"
+          : "http://localhost:5000/api/v1/user/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            password,
+            ...(isLogin ? {} : { name }),
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Something went wrong!");
+      } else {
+        // Save user info to localStorage
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setIsAuthenticated(true);
+
+        // Clear input fields
+        setEmail("");
+        setPassword("");
+        setName("");
+
+        // Redirect to Home Page
+        router.push("/");
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  
-
   return (
-    <div className="flex justify-center items-center  min-h-screen bg-[#F4F4F4]">
-      <div className="bg-white shadow-xl rounded-lg w-full max-w-md form-container p-6 ">
-        <h2 className="text-5xl font-bold text-center text-gray-800 mb-6">
-          {isLogin ? "Login" : "Sign Up"}
+    <div className="flex justify-center items-center min-h-screen bg-[#F4F4F4]">
+      <div className="bg-white shadow-xl rounded-lg w-full max-w-md p-6">
+        <h2 className="text-4xl font-bold text-center text-gray-800 mb-6">
+          {isLogin ? "Login" : "Register"}
         </h2>
 
         {/* Error Message */}
@@ -49,17 +115,22 @@ export default function AuthPage() {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="">
-            <label className="text-gray-700 font-medium">Name</label>
-            <input
-              type="name"
-              placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full p-2 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
-          <div className="">
+          {!isLogin && (
+            <div>
+              <label className="text-gray-700 font-medium">Name</label>
+              <input
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full p-2 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                ref={nameRef}
+                onKeyDown={(e) => handleKeyDown(e, emailRef)} // Move to Email on Enter
+              />
+            </div>
+          )}
+
+          <div>
             <label className="text-gray-700 font-medium">Email</label>
             <input
               type="email"
@@ -67,27 +138,37 @@ export default function AuthPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-2 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              ref={emailRef}
+              onKeyDown={(e) => handleKeyDown(e, passwordRef)} // Move to Password on Enter
             />
           </div>
 
-          <div className="mb-6">
-            <label className="text-md block text-gray-700 font-medium mb-2">
-              Password
-            </label>
+          <div>
+            <label className="text-gray-700 font-medium">Password</label>
             <input
               type="password"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-2 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              ref={passwordRef}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSubmit(e); // Submit only when all fields are filled
+                }
+              }}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded font-semibold hover:bg-blue-700 transition"
+            className={`w-full bg-blue-500 text-white p-2 rounded font-semibold hover:bg-blue-700 transition ${
+              loading && "opacity-50 cursor-not-allowed"
+            }`}
+            disabled={loading}
           >
-            {isLogin ? "Login" : "Sign Up"}
+            {loading ? "Processing..." : isLogin ? "Login" : "Register"}
           </button>
         </form>
 
@@ -106,7 +187,7 @@ export default function AuthPage() {
             onClick={() => setIsLogin(!isLogin)}
             className="text-blue-800 font-semibold ml-1 hover:underline"
           >
-            {isLogin ? "Sign Up" : "Login"}
+            {isLogin ? "Register" : "Login"}
           </button>
         </div>
       </div>

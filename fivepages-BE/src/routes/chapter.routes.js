@@ -16,6 +16,6 @@ router.get('/novel/:novelId', getAllChapters);
 router.get('/latest', getLatestChapters);
 
 // Get a single chapter by ID
-router.get('/:id', verifyJWT, getChapterByID);
+router.get('/:id', getChapterByID);
 
 export default router;
