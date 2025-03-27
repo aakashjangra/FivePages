@@ -137,3 +137,29 @@ export const getChapterByID = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
+
+export const deleteChapter = async (req, res) => {
+  const chapterID = req.params.id;
+
+  if (!chapterID || typeof chapterID !== 'string' || !chapterID.trim() || !mongoose.Types.ObjectId.isValid(chapterID)) {
+    return res.status(400).json({ message: 'Invalid chapter ID' });
+  }
+
+  try {
+    const chapter = await Chapter.findById(chapterID);
+
+    if (!chapter) {
+      return res.status(404).json({ message: 'Chapter not found' });
+    }
+
+    // Remove chapter reference from the novel
+    await Novel.findByIdAndUpdate(chapter.novel, { $pull: { chapters: chapterID } });
+
+    // Delete the chapter
+    const deletedChapter = await Chapter.findByIdAndDelete(chapterID);
+
+    res.status(200).json({ message: 'Chapter deleted successfully', deletedChapter });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
