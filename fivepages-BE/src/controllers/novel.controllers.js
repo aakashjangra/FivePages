@@ -134,27 +134,53 @@ export const getNovelByID = async (req, res) => {
     const novel = await Novel.aggregate([
       { $match: { _id: new mongoose.Types.ObjectId(novelID) } },
       {
-        $lookup: {
-          from: "chapters",
-          localField: "_id",
-          foreignField: "novel",
-          as: "chapters",
-        },
+      $lookup: {
+        from: "chapters",
+        localField: "_id",
+        foreignField: "novel",
+        as: "chapters",
+      },
       },
       {
-        $project: {
-          _id: 1,
-          title: 1,
-          author: 1,
-          thumbnail: 1,
-          publishedYear: 1,
-          synopsis: 1,
-          rating: 1,
-          type: 1,
-          language: 1,
-          tags: 1,
-          chapters: { _id: 1, title: 1 },
-        },
+      $unwind: {
+        path: "$chapters",
+        preserveNullAndEmptyArrays: true,
+      },
+      },
+      {
+      $sort: {
+        "chapters.chapterNumber": 1, // Sort chapters by chapter number in ascending order
+      },
+      },
+      {
+      $group: {
+        _id: "$_id",
+        title: { $first: "$title" },
+        author: { $first: "$author" },
+        thumbnail: { $first: "$thumbnail" },
+        publishedYear: { $first: "$publishedYear" },
+        synopsis: { $first: "$synopsis" },
+        rating: { $first: "$rating" },
+        type: { $first: "$type" },
+        language: { $first: "$language" },
+        tags: { $first: "$tags" },
+        chapters: { $push: "$chapters" },
+      },
+      },
+      {
+      $project: {
+        _id: 1,
+        title: 1,
+        author: 1,
+        thumbnail: 1,
+        publishedYear: 1,
+        synopsis: 1,
+        rating: 1,
+        type: 1,
+        language: 1,
+        tags: 1,
+        chapters: { _id: 1, title: 1, chapterNumber: 1 },
+      },
       },
     ]);
 
