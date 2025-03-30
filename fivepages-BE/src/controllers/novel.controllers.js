@@ -29,7 +29,7 @@ export const getLatestNovels = async (req, res) => {
   try {
     const novels = await Novel.find()
       .select("_id title author thumbnail createdAt")
-      .sort({ createdAt: -1 })
+      .sort({ updatedAt: -1 })
       .limit(count);
     // console.log(novels);
     res.status(200).json(novels);
