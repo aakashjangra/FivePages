@@ -2,6 +2,11 @@
 
 @import "tailwindcss";
 
+@import "swiper/css";
+@import "swiper/css/navigation";
+@import "swiper/css/pagination";
+
+
 * {
   box-sizing: border-box;
   font-family: "Karla", sans-serif;
@@ -11,6 +16,15 @@ body{
   background: #f5f1f1;
   user-select: none;
 }
+
+.sticky-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensure it stays on top of other elements */
+  background-color: white; /* Optional: Define a background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better visibility */
+}
+
 .redHeart > svg {
     
   fill: rgb(189, 15, 15) !important; 

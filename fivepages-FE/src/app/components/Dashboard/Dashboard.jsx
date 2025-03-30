@@ -5,6 +5,7 @@ import PopularBooks from "../Popular/Popular";
 import NewReleases from "../NewRealease/NewRelease";
 import CorouselComponent from "../Corousel/CarouselComponent";
 
+
 const Dashboard = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,9 +41,11 @@ const Dashboard = () => {
         <p className="text-red-500 text-center">{error}</p>
       ) : (
         <>
+          {/* <NewCorousel books={books}/> */}
           <CorouselComponent books={books} />
           <PopularBooks books={books} />
           <NewReleases books={books} />
+          
         </>
       )}
     </div>

@@ -22,7 +22,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between lg:px-31 px-10 bg-white shadow-md mb-2">
+    <nav className="flex items-center justify-between lg:px-31 px-10 bg-white shadow-md mb-2 sticky">
       {/* Logo */}
       <div className="">
         {/* <p className="text-3xl font-bold">FivePages</p> */}
