@@ -57,12 +57,8 @@ export const updateChapter = async (req, res) => {
   if (chapterWithChapterNumber && chapterWithChapterNumber._id.toString() !== chapterID ) {
     return res.status(400).json({ message: 'Chapter number already exists' });
   }
-
-  
-   
   
   try {
-
     const exixtingChapter = await Chapter.findById(chapterID);
     if (!exixtingChapter) {
       return res.status(404).json({ message: 'Chapter not found' });
@@ -72,12 +68,14 @@ export const updateChapter = async (req, res) => {
     if (title !== undefined) updateData.title = title;
     if (content !== undefined) updateData.content = content;
     if (chapterNumber !== undefined) updateData.chapterNumber = chapterNumber;
-
     const updatedChapter = await Chapter.findByIdAndUpdate(
       chapterID,
       updateData,
       { new: true, runValidators: true }
     );
+
+    // Update the novel's updatedAt field
+    await Novel.findByIdAndUpdate(novelID, { updatedAt: new Date() });
 
     return res.status(200).json(updatedChapter);
   } catch (err) {
