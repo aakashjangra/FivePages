@@ -39,8 +39,7 @@ export const getLatestNovels = async (req, res) => {
 };
 
 //done
-export const 
-getNovels = async (req, res) => {
+export const getNovels = async (req, res) => {
   // NOTE: if the code doesn't work for optional field of count, use the commented code instead
 
   // const count = req?.boyd?.count ? parseInt(req.body.count): undefined;
@@ -56,7 +55,7 @@ getNovels = async (req, res) => {
     // }
     const novels = await Novel.find()
       .limit(count)
-      .select("title author thumbnail");
+      .select("title author thumbnail createdAt updatedAt");
 
     res.status(200).json(novels);
   } catch (err) {
@@ -165,6 +164,8 @@ export const getNovelByID = async (req, res) => {
         language: { $first: "$language" },
         tags: { $first: "$tags" },
         chapters: { $push: "$chapters" },
+        createdAt: {$first: "$createdAt"},
+        updatedAt: {$first: "$updatedAt"}
       },
       },
       {
@@ -180,6 +181,8 @@ export const getNovelByID = async (req, res) => {
         language: 1,
         tags: 1,
         chapters: { _id: 1, title: 1, chapterNumber: 1 },
+        createdAt: 1,
+        updatedAt: 1
       },
       },
     ]);

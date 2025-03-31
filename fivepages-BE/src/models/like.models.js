@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { applyISTConversion } from '../middlewares/schema.middleware.js';
 
 const likeSchema = new mongoose.Schema(
   {
@@ -13,6 +14,9 @@ const likeSchema = new mongoose.Schema(
 
 // Prevent duplicate entries for the same user and novel
 likeSchema.index({ user: 1, novel: 1 }, { unique: true });
+
+// Apply the middleware to the likeSchema
+applyISTConversion(likeSchema);
 
 const Like = mongoose.model('Like', likeSchema);
 

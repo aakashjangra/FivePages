@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { applyISTConversion } from '../middlewares/schema.middleware.js';
 
 const novelSchema = new mongoose.Schema(
   {
@@ -19,6 +20,9 @@ const novelSchema = new mongoose.Schema(
     timestamps: true, // Adds createdAt and updatedAt fields
   }
 );
+
+// Middleware to convert timestamps to IST before saving
+applyISTConversion(novelSchema);
 
 const Novel = mongoose.model('Novel', novelSchema);
 

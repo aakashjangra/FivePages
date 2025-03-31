@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { applyISTConversion } from '../middlewares/schema.middleware.js';
 
 const readlistSchema = new mongoose.Schema(
   {
@@ -10,6 +11,9 @@ const readlistSchema = new mongoose.Schema(
     timestamps: true
   }
 );
+
+// Middleware to convert timestamps to IST before saving
+applyISTConversion(readlistSchema);
 
 // Prevent duplicate entries for the same user and novel
 readlistSchema.index({ user: 1, novel: 1 }, { unique: true });

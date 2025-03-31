@@ -59,23 +59,30 @@ export const updateChapter = async (req, res) => {
   }
   
   try {
-    const exixtingChapter = await Chapter.findById(chapterID);
-    if (!exixtingChapter) {
+    const existingChapter = await Chapter.findById(chapterID);
+    if (!existingChapter) {
       return res.status(404).json({ message: 'Chapter not found' });
     }
 
-    const updateData = {};
-    if (title !== undefined) updateData.title = title;
-    if (content !== undefined) updateData.content = content;
-    if (chapterNumber !== undefined) updateData.chapterNumber = chapterNumber;
-    const updatedChapter = await Chapter.findByIdAndUpdate(
-      chapterID,
-      updateData,
-      { new: true, runValidators: true }
-    );
+    if(existingChapter.novel.toString() !== novelID) {
+      return res.status(400).json({ message: 'Chapter does not belong to this novel' });
+    }
+
+    // Update the fields manually
+    if (title !== undefined) existingChapter.title = title;
+    if (content !== undefined) existingChapter.content = content;
+    if (chapterNumber !== undefined) existingChapter.chapterNumber = chapterNumber;
+
+    // Save the document to trigger pre('save')
+    const updatedChapter = await existingChapter.save();
 
     // Update the novel's updatedAt field
-    await Novel.findByIdAndUpdate(novelID, { updatedAt: new Date() });
+    // Update the novel's updatedAt field by saving the novel document to trigger pre('save')
+    const novel = await Novel.findById(novelID);
+    if (novel) {
+      novel.updatedAt = new Date();
+      await novel.save();
+    }
 
     return res.status(200).json(updatedChapter);
   } catch (err) {
