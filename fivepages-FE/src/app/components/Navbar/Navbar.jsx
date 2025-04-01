@@ -10,7 +10,7 @@ import { useEffect } from "react";
 const Navbar = () => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const [user, setUser ] = useState();
 
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
@@ -26,10 +26,11 @@ const Navbar = () => {
 //inauthenticated use effect
   useEffect(() => {
     const user = localStorage.getItem("user");
-    console.log(user);
+    console.log(JSON.parse(user));
+    setUser(JSON.parse(user));
 
     if (!user) {
-      etIsAuthenticated(false);
+      setIsAuthenticated(false);
     } else {
       setIsAuthenticated(true);
     }
@@ -111,13 +112,14 @@ const Navbar = () => {
           <FaUserCircle className="text-2xl text-black cursor-pointer hover:text-700 transition s" />
           {isAuthenticated ?
           <select
-          name="Profile"
+          name= {user.name}
+          // id={user.name}
           id="profile-dropdown"
           className="focus:outline-none "
           onChange={handleSelectChange}
         >
           <option value="profile" className="bg-white">
-            Profile
+            {user.name}
           </option>
           
           <option value="Logout" className="bg-white">
@@ -125,7 +127,7 @@ const Navbar = () => {
           </option>  
         </select>
         :
-        <button>
+        <div>
           <Link href="/login">
             <button className="bg-white text-black px-2 py-1 rounded-md hover:bg-gray-100 transition"
             onClick={() => router.push("/login")}
@@ -133,7 +135,7 @@ const Navbar = () => {
               Login
             </button>
           </Link>
-        </button>
+        </div>
         }
           {/* <select
             name="Profile"
