@@ -53,3 +53,18 @@ export const toggleReadlist = async (req, res) => {
     return res.status(500).json({ error: e.message });
   }
 };
+
+//done and tested
+export const getReadlist = async (req, res) => {
+  const user = req.user._id;
+
+  try {
+    const readlist = await Readlist.find({ user })
+      .populate('novel', 'title author thumbnail rating')
+      .lean();
+
+    return res.status(200).json(readlist);
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+}

@@ -20,7 +20,7 @@ export const searchNovels = async (req, res) => {
 
   const novels = await Novel.find(query); // Fetch novels based on search query
 
-  return res.status(400).json({ data: novels });
+  return res.status(200).json({ data: novels });
 };
 
 export const getLatestNovels = async (req, res) => {

@@ -1,6 +1,7 @@
 import Router from 'express'
 import { body } from 'express-validator';
-import { createUser, loginUser } from '../controllers/user.controllers.js';
+import { changePassword, createUser, loginUser } from '../controllers/user.controllers.js';
+import { verifyJWT } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
@@ -14,8 +15,9 @@ router.post(
   createUser
 );
 
-router.get('/login', loginUser);
 router.post('/login', loginUser);
+
+router.patch('/change-password', verifyJWT, changePassword);
 
 // forget password ki api bnani s
 // logout ki bhi 
