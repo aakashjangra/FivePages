@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { applyISTConversion } from '../middlewares/schema.middleware.js';
 
 const userSchema = new mongoose.Schema(
   {
@@ -43,6 +44,9 @@ userSchema.methods.generateAccessToken = function () {
     }
   )
 }
+
+// Middleware to convert timestamps to IST before saving
+applyISTConversion(userSchema);
 
 const User = mongoose.model('User', userSchema);
 

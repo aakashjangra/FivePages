@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { applyISTConversion } from '../middlewares/schema.middleware.js';
 
 const chapterSchema = new mongoose.Schema(
   {
@@ -11,6 +12,9 @@ const chapterSchema = new mongoose.Schema(
     timestamps: true
   }
 );
+
+
+applyISTConversion(chapterSchema);
 
 const Chapter = mongoose.model('Chapter', chapterSchema);
 

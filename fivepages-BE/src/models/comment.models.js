@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { applyISTConversion } from '../middlewares/schema.middleware.js';
 
 // comment can be either for a chapter or a novel
 // can't be both
@@ -13,6 +14,8 @@ const commentSchema = new mongoose.Schema(
     timestamps: true
   }
 );
+
+applyISTConversion(commentSchema);
 
 const Comment = mongoose.model('Comment', commentSchema);
 
