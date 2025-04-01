@@ -75,7 +75,7 @@ export const updateChapter = async (req, res) => {
     );
 
     // Update the novel's updatedAt field
-    await Novel.findByIdAndUpdate(novelID, { updatedAt: new Date() });
+    // await Novel.findByIdAndUpdate(novelID, { updatedAt: new Date() });
 
     return res.status(200).json(updatedChapter);
   } catch (err) {
