@@ -27,7 +27,7 @@ export const createUser = async (req, res) => {
   })
 
   if (existedUser) {
-    return res.status(409).json({"message": "User with email or username already exists"});
+    return res.status(409).json({ "message": "User with email or username already exists" });
   }
 
   const newUser = await User.create({
@@ -100,4 +100,36 @@ export const logoutUser = async (req, res) => {
     .status(200)
     .clearCookie("accessToken", options)
     .json({ "message": "User logged out!" });
+}
+
+//done and tested
+export const changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.user._id;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ "message": "currentPassword and newPassword are required" });
+  }
+  if (currentPassword === newPassword) {
+    return res.status(400).json({ "message": "New password should be different from current password" });
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ "message": "User not found" });
+  }
+
+  const isPasswordValid = await user.isPasswordCorrect(currentPassword);
+  if (!isPasswordValid) {
+    return res.status(400).json({ "message": "Incorrect Password" });
+  }
+
+  try {
+    user.password = newPassword;
+    await user.save();
+
+    return res.status(200).json({ "message": "Password updated successfully!"});
+  } catch (error) {
+    return res.status(500).json({ "message": error.message });
+  }
 }
