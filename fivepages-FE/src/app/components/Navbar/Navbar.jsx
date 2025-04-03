@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 const Navbar = () => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -24,6 +25,9 @@ const Navbar = () => {
     }
   }, [localStorage.getItem("user")]);
 
+ 
+
+
   const handleSelectChange = (event) => {
     const selectedValue = event.target.value;
 
@@ -34,6 +38,8 @@ const Navbar = () => {
     }
     event.target.value = ""; // Reset dropdown to allow re-selection
   };
+
+
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -74,6 +80,7 @@ const Navbar = () => {
           <FaSearch className="text-blue-700" />
         </div>
 
+
         {/* Profile Section with Dropdown */}
         {isAuthenticated && user ? (
           <div className="flex items-center gap-2">
@@ -83,6 +90,8 @@ const Navbar = () => {
               className="border border-gray-300 rounded-md px-2 py-1 bg-white cursor-pointer"
               onChange={handleSelectChange}
               defaultValue=""
+
+        
             >
               <option value="" disabled hidden>{user.name}</option>
               <option value="profile">Profile</option>
@@ -95,7 +104,41 @@ const Navbar = () => {
               Login
             </button>
           </Link>
+
         )}
+        </div>
+        }
+          {/* <select
+            name="Profile"
+            id="profile-dropdown"
+            className="focus:outline-none "
+            onChange={handleSelectChange}
+          >
+            <option value="profile" className="bg-white">
+              Profile
+            </option>
+            <option value="register" className="bg-white">
+              Register
+            </option> 
+            <option value="Logout" className="bg-white">
+              Log out
+            </option>  
+          </select> */}
+
+          {/* Register Button */}
+          {/* <Link href="/login">
+            <button className="bg-white text-black px-2 py-1 rounded-md hover:bg-gray-100 transition"
+            onClick={() => router.push("/login")}
+            >
+              Login
+            </button>
+          </Link> */
+
+          
+        }
+          
+        </div>
+
       </div>
     </nav>
   );
