@@ -107,7 +107,7 @@ const Navbar = () => {
 
         )}
         </div>
-        }
+        
           {/* <select
             name="Profile"
             id="profile-dropdown"
@@ -137,9 +137,7 @@ const Navbar = () => {
           
         }
           
-        </div>
 
-      </div>
     </nav>
   );
 };
