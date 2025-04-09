@@ -15,6 +15,7 @@
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "add": "^2.0.6",
+    "axios": "^1.8.4",
     "button": "^1.1.1",
     "card": "^2.5.4",
     "components": "^0.1.0",

@@ -7,6 +7,7 @@ const getToken = () => {
       console.warn("⚠️ Invalid or malformed token in localStorage:", token);
       return null;
     }
+    console.log(token)
     return token;
   }
   return null;
@@ -47,15 +48,15 @@ export const fetchNovelById = (id) => fetchData(`novels/${id}`);
 
 // 🔹 Comments
 export const fetchCommentsByNovel = (novelId) => fetchData(`comments?novelId=${novelId}`);
+
 export const postComment = ({ content, userId, novelId }) =>
   fetchData("comments", {
     method: "POST",
     body: { content, userId, novelId },
   });
+  
 export const deleteCommentById = (commentId) =>
   fetchData(`comments/${commentId}`, {
     method: "DELETE",
   });
 
-// 🔐 Authenticated User
-export const fetchCurrentUser = () => fetchData("users");

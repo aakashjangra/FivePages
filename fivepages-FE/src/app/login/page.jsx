@@ -15,27 +15,24 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Refs for input fields
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const nameRef = useRef(null);
 
-  // Handle Enter Key Navigation
   const handleKeyDown = (e, nextRef) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Prevent form submission
+      e.preventDefault();
       if (nextRef?.current) {
-        nextRef.current.focus(); // Move focus to the next field
+        nextRef.current.focus();
       }
     }
   };
 
-  // Check user authentication status on component mount
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setIsAuthenticated(true);
-      router.push("/"); // Redirect to home if already authenticated
+      router.push("/");
     }
   }, [router]);
 
@@ -43,7 +40,6 @@ export default function AuthPage() {
     e.preventDefault();
     setError("");
 
-    // Validation
     if (!email || !password || (!isLogin && !name)) {
       setError("Please fill in all fields.");
       return;
@@ -78,30 +74,27 @@ export default function AuthPage() {
       );
 
       const data = await response.json();
-
+      console.log(data)
       if (!response.ok) {
         setError(data.message || "Something went wrong!");
       } else {
-        // Save user info to localStorage
-        localStorage.setItem("user", JSON.stringify(data.user));
+        // ✅ Updated: Save user info + token
+        localStorage.setItem("user", JSON.stringify({ ...data.user, token: data.accessToken }));
         setIsAuthenticated(true);
 
-        // Clear input fields
         setEmail("");
         setPassword("");
         setName("");
 
-        // ✅ Show toast message only if login/register is successful
-       if (data.user) {
-        if (isLogin) {
-          toast.success("Login successful! Redirecting...");
-        } else {
-          toast.success("Registration successful! Redirecting...");
+        if (data.user) {
+          if (isLogin) {
+            toast.success("Login successful! Redirecting...");
+          } else {
+            toast.success("Registration successful! Redirecting...");
+          }
+          router.push("/");
         }
-        router.push("/");
       }
-    
-    }
     } catch (err) {
       setError("Network error. Please try again.");
     } finally {
@@ -116,7 +109,6 @@ export default function AuthPage() {
           {isLogin ? "Login" : "Register"}
         </h2>
 
-        {/* Error Message */}
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 text-center text-xl py-3 rounded mb-4">
             {error}
@@ -134,7 +126,7 @@ export default function AuthPage() {
                 onChange={(e) => setName(e.target.value)}
                 className="w-full p-2 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
                 ref={nameRef}
-                onKeyDown={(e) => handleKeyDown(e, emailRef)} // Move to Email on Enter
+                onKeyDown={(e) => handleKeyDown(e, emailRef)}
               />
             </div>
           )}
@@ -148,7 +140,7 @@ export default function AuthPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-2 border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
               ref={emailRef}
-              onKeyDown={(e) => handleKeyDown(e, passwordRef)} // Move to Password on Enter
+              onKeyDown={(e) => handleKeyDown(e, passwordRef)}
             />
           </div>
 
@@ -164,7 +156,7 @@ export default function AuthPage() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  handleSubmit(e); // Submit only when all fields are filled
+                  handleSubmit(e);
                 }
               }}
             />

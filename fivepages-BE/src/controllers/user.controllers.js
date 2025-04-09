@@ -44,50 +44,52 @@ export const createUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!password && !email) {
-    return res.status(400).json({ "message": "username and password are required" });
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
   }
 
-  const user = await User.findOne({
-    email
-  })
+  try {
+    const user = await User.findOne({ email });
 
-  if (!user) {
-    return res.status(404).json({ "message": "User does not exist!" });
+    if (!user) {
+      return res.status(404).json({ message: "User does not exist!" });
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Incorrect password" });
+    }
+
+    const accessToken =await  generateAccessToken(user._id);
+
+    if (!accessToken) {
+      return res.status(500).json({ message: "Could not generate access token" });
+    }
+
+    const loggedInUser = await User.findById(user._id).select("-password");
+
+    // Cookie options
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true in production
+    
+    };
+
+    console.log(accessToken)
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options) // ✅ cookie, not cookies
+      .json({
+        user: loggedInUser,
+        accessToken,
+        message: "User logged in successfully!"
+      });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Server error" });
   }
-
-  const isPasswordValid = await user.isPasswordCorrect(password);
-
-  if (!isPasswordValid) {
-    return res.status(400).json({ "message": "Incorrect Password" });
-  }
-
-  const accessToken = await generateAccessToken(user._id);
-
-  if (!accessToken) {
-    return res.status(500).json({ "message": "Could not generate access token" });
-  }
-
-  const loggedInUser = await User.findById(user._id).
-    select("-password");
-
-  //for cookies
-  const options = {
-    httpOnly: true,
-    secure: true
-  }
-  console.log(user)
-
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .json(
-      {
-        user: loggedInUser, accessToken,
-        "message": "User logged in successfully!"
-      },
-    )
-}
+};
 
 export const logoutUser = async (req, res) => {
 

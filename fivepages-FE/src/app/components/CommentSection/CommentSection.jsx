@@ -1,94 +1,214 @@
 "use client";
-
 import { useEffect, useState } from "react";
-import {
-  fetchCommentsByNovel,
-  postComment,
-  deleteCommentById,
-} from "./../../utlis/api";
 
-export default function CommentSection({ novelId }) {
-  const [newComment, setNewComment] = useState("");
+export default function CommentSection({ itemId, type }) {
   const [comments, setComments] = useState([]);
-  const [userId, setUserId] = useState(null);
+  const [content, setContent] = useState("");
+  const [editingComment, setEditingComment] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
+  
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUserId(parsedUser?._id); // 👈 extract userId from localStorage
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setToken(parsedUser.token || null);
+      }
     }
   }, []);
-
+  
   useEffect(() => {
-    if (novelId) loadComments();
-  }, [novelId]);
+    if (user) {
+      fetchComments();
+    }
+  }, [user]);
+  
 
-  const loadComments = async () => {
-    const data = await fetchCommentsByNovel(novelId);
-    if (!data.error) {
-      // Sort by newest
-      const sorted = data.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+
+  const fetchComments = async () => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", `Bearer ${token}`);
+
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+
+        redirect: "follow",
+      };
+
+      const res = await fetch(
+        `http://localhost:5000/api/v1/comments/${itemId}?type=${type}`,
+        requestOptions
       );
-      setComments(sorted);
+      const data = await res.json();
+      console.log(data);
+      setComments(data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
     }
   };
 
-  const handlePostComment = async () => {
-    if (!newComment.trim() || !userId) return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!content.trim()) return;
 
-    const newEntry = await postComment({ content: newComment, userId, novelId });
-    if (!newEntry.error) {
-      setComments([newEntry, ...comments]);
-      setNewComment("");
+    try {
+      setLoading(true);
+      const url = editingComment
+        ? `http://localhost:5000/api/v1/comments/${editingComment._id}`
+        : "http://localhost:5000/api/v1/comments/";
+
+      const method = editingComment ? "PUT" : "POST";
+
+      const payload = editingComment
+        ? { content }
+        : type === "novel"
+        ? { content, novelID: itemId }
+        : { content, chapterID: itemId };
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", `Bearer ${token}`);
+
+      const raw = JSON.stringify(
+        type === "novel"
+          ? { content, novelID: itemId }
+          : { content, chapterID: itemId }
+      );
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      fetch("http://localhost:5000/api/v1/comments/", requestOptions)
+        .then((response) => response.json())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+
+      // const response = await fetch(url, {
+      //   method,
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "Authorization": `Bearer ${token}`,
+      //   },
+      //   body: JSON.stringify(payload),
+      // });
+
+      // if (!response.ok) {
+      //   const errorData = await response.json();
+      //   throw new Error(errorData.message || "Failed to submit comment");
+      // }
+
+     
+    setContent("");
+    setEditingComment(null);
+    await fetchComments(); // Wait for fetch to complete after DB has been updated
+    } catch (err) {
+      console.error("Submit error:", err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async (commentId) => {
-    const res = await deleteCommentById(commentId);
-    if (!res.error) {
-      setComments(comments.filter((c) => c._id !== commentId));
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/v1/comments/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to delete");
+      }
+
+      fetchComments();
+    } catch (err) {
+      console.error("Delete error:", err.message);
     }
   };
 
+  const startEdit = (comment) => {
+    setContent(comment.content);
+    setEditingComment(comment);
+  };
+
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md border border-gray-300 space-y-5">
-      <h2 className="text-xl font-semibold text-gray-800">Leave a Comment</h2>
+    <div className="p-4 border rounded-lg max-w-2xl mx-auto shadow-sm bg-white">
+      <h2 className="text-2xl font-bold mb-4">Comments</h2>
 
-      <textarea
-        className="w-full p-5 border border-gray-300 rounded-lg"
-        placeholder="Write your comment..."
-        value={newComment}
-        onChange={(e) => setNewComment(e.target.value)}
-      />
+      <form onSubmit={handleSubmit} className="mb-6">
+        <textarea
+          className="w-full border rounded-md p-2 mb-2"
+          rows={3}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Write your comment..."
+        />
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          disabled={loading}
+        >
+          {editingComment ? "Update" : "Post"} Comment
+        </button>
+        {editingComment && (
+          <button
+            type="button"
+            className="ml-2 px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+            onClick={() => {
+              setEditingComment(null);
+              setContent("");
+            }}
+          >
+            Cancel
+          </button>
+        )}
+      </form>
 
-      <button
-        className="cursor-pointer px-6 py-4 bg-blue-500 hover:bg-blue-700 text-white rounded-lg"
-        onClick={handlePostComment}
-      >
-        Post Comment
-      </button>
-
-      <div className="space-y-4 pt-6">
-        {comments.map((comment) => (
-          <div key={comment._id} className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
-            <div>
+      <div className="space-y-4">
+        {Array.isArray(comments) &&
+          comments?.map((comment) => (
+            <div key={comment._id} className="border p-3 rounded shadow-sm">
+              <div className="text-sm text-gray-700 font-semibold">
+                {comment.user?.name || "Unknown"} –{" "}
+                <span className="text-gray-500 text-xs">
+                  {new Date(comment.createdAt).toLocaleString()}
+                </span>
+              </div>
               <p className="text-gray-800">{comment.content}</p>
-              <p className="text-sm text-gray-500">
-                by {comment.user?.name || "Anonymous"}
-              </p>
+              {user?._id === comment.user?._id && (
+                <div className="mt-2 flex gap-3 text-sm">
+                  <button
+                    onClick={() => startEdit(comment)}
+                    className="text-blue-600 hover:underline"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(comment._id)}
+                    className="text-red-600 hover:underline"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
-            {comment.user?._id === userId && (
-              <button
-                className="text-red-500 hover:text-red-700 text-sm"
-                onClick={() => handleDelete(comment._id)}
-              >
-                Delete
-              </button>
-            )}
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
