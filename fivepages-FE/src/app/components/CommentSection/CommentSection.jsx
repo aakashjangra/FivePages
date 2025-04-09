@@ -20,6 +20,8 @@ export default function CommentSection({ itemId, type }) {
     }
   }, []);
 
+  
+
   useEffect(() => {
     if (user) {
       fetchComments();
@@ -35,7 +37,6 @@ export default function CommentSection({ itemId, type }) {
       const requestOptions = {
         method: "GET",
         headers: myHeaders,
-
         redirect: "follow",
       };
 

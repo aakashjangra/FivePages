@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import CommentSection from "@/app/components/CommentSection/CommentSection";
 
 export default function ChapterPage() {
   const router = useRouter();
@@ -114,7 +115,7 @@ export default function ChapterPage() {
   const nextChapter = currentIndex < novel.chapters?.length - 1 ? novel.chapters[currentIndex + 1] : null;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-14 py-8 border-2 bg-white">
       {/* Breadcrumb Navigation */}
       <nav className="flex mb-6 text-sm text-gray-600">
         <Link href="/" className="hover:text-blue-500">Home</Link>
@@ -180,6 +181,7 @@ export default function ChapterPage() {
           <div></div>
         )}
       </div>
+   
     </div>
   );
 }
