@@ -9,7 +9,6 @@ export default function CommentSection({ itemId, type }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
-  
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedUser = localStorage.getItem("user");
@@ -20,14 +19,12 @@ export default function CommentSection({ itemId, type }) {
       }
     }
   }, []);
-  
+
   useEffect(() => {
     if (user) {
       fetchComments();
     }
   }, [user]);
-  
-
 
   const fetchComments = async () => {
     try {
@@ -76,42 +73,41 @@ export default function CommentSection({ itemId, type }) {
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("Authorization", `Bearer ${token}`);
 
-      const raw = JSON.stringify(
-        type === "novel"
-          ? { content, novelID: itemId }
-          : { content, chapterID: itemId }
-      );
+      // const raw = JSON.stringify(
+      //   type === "novel"
+      //     ? { content, novelID: itemId }
+      //     : { content, chapterID: itemId }
+      // );
 
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
+      // const requestOptions = {
+      //   method: "POST",
+      //   headers: myHeaders,
+      //   body: raw,
+      //   redirect: "follow",
+      // };
 
-      fetch("http://localhost:5000/api/v1/comments/", requestOptions)
-        .then((response) => response.json())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
+      // fetch("http://localhost:5000/api/v1/comments/", requestOptions)
+      //   .then((response) => response.json())
+      //   .then((result) => console.log(result))
+      //   .catch((error) => console.error(error));
 
-      // const response = await fetch(url, {
-      //   method,
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     "Authorization": `Bearer ${token}`,
-      //   },
-      //   body: JSON.stringify(payload),
-      // });
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.message || "Failed to submit comment");
-      // }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit comment");
+      }
 
-     
-    setContent("");
-    setEditingComment(null);
-    await fetchComments(); // Wait for fetch to complete after DB has been updated
+      setContent("");
+      setEditingComment(null);
+      await fetchComments(); // Wait for fetch to complete after DB has been updated
     } catch (err) {
       console.error("Submit error:", err.message);
     } finally {
