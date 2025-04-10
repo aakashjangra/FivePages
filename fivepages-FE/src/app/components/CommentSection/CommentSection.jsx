@@ -145,7 +145,7 @@ export default function CommentSection({ itemId, type }) {
   };
 
   return (
-    <div className="p-4 border rounded-lg max-w-2xl mx-auto shadow-sm bg-white">
+    <div className="p-4 border rounded-lg mx-2 shadow-sm bg-white ">
       <h2 className="text-2xl font-bold mb-4">Comments</h2>
 
       <form onSubmit={handleSubmit} className="mb-6">

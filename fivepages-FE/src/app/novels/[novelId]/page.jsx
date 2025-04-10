@@ -7,6 +7,7 @@ import Link from "next/link";
 import "../../globals.css";
 import { BookmarkCheck, BookOpen, Heart } from "lucide-react";
 import CommentSection from "./../../components/CommentSection/CommentSection";
+import RecommendedNovels from "../../components/RecommendedNovels/RecommendedNovels";
 
 export default function NovelPage() {
   const router = useRouter();
@@ -72,7 +73,7 @@ export default function NovelPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F4F4F4] p-8">
+    <div className="flex justify-center bg-[#F4F4F4] p-4 ">
       <div className="w-full max-w-3xl p-10 bg-white shadow-md border border-gray-300 rounded-xl space-y-10">
         {/* Novel Header */}
         <div className="flex gap-8">
@@ -162,25 +163,11 @@ export default function NovelPage() {
           </ul>
         </div>
 
-        {/* Comments Section */}
+        {/* Comments Section */}  
         <CommentSection itemId={novelId} type="novel" />
-        {/* <div className="bg-white p-6 rounded-xl shadow-md border border-gray-300 space-y-5">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Leave a Comment
-          </h2>
-          <textarea
-            className="w-full p-5 border border-gray-300 rounded-lg "
-            placeholder="Write your comment..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-          ></textarea>
-          <button
-            className="cursor-pointer px-6 py-4 bg-blue-500 hover:bg-blue-700 text-white rounded-lg"
-            onClick={toggleLike}
-          >
-            Post Comment
-          </button>
-        </div> */}
+        {/* Recommendation Section */}
+        
+        <RecommendedNovels novelId={novelId} count={4} /> 
       </div>
     </div>
   );
