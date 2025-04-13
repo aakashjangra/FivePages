@@ -115,7 +115,7 @@ export default function ChapterPage() {
   const nextChapter = currentIndex < novel.chapters?.length - 1 ? novel.chapters[currentIndex + 1] : null;
 
   return (
-    <div className="max-w-4xl mx-auto px-14 py-8 border-2 bg-white">
+    <div className="max-w-2xl mx-auto px-14 py-8 border-2 bg-white">
       {/* Breadcrumb Navigation */}
       <nav className="flex mb-6 text-sm text-gray-600">
         <Link href="/" className="hover:text-blue-500">Home</Link>
