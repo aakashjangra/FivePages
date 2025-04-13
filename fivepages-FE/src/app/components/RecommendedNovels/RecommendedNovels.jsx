@@ -34,7 +34,7 @@ export default function RecommendedNovels({ novelId, count = 5 }) {
               src={novel.thumbnail}
               alt={novel.title
               }
-              className="h-40 w-full object-cover rounded cursor-pointer"
+              className="h-48 w-full object-cover rounded cursor-pointer"
             />
             <h4 className="mt-2 font-semibold">{novel.title}</h4>
             
