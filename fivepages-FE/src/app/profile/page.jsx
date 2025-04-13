@@ -43,7 +43,7 @@ export default function UserProfilePage() {
         if (!token) throw new Error("No token found in localStorage");
 
         setToken(token);
-        const response = await fetch("http://localhost:5000/api/v1/user/getUser", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_PORT}user/getUser`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -83,7 +83,7 @@ export default function UserProfilePage() {
       const token = getToken();
       if (!token) throw new Error("Token not found");
 
-      const response = await fetch("http://localhost:5000/api/v1/user/updateProfile", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_PORT}user/updateProfile`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -133,7 +133,7 @@ export default function UserProfilePage() {
       const token = getToken();
       if (!token) throw new Error("Token not found");
 
-      const response = await fetch("http://localhost:5000/api/v1/user/change-password", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_PORT}user/change-password`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

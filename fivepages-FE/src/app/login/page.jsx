@@ -60,8 +60,8 @@ export default function AuthPage() {
     try {
       const response = await fetch(
         isLogin
-          ? "http://localhost:5000/api/v1/user/login"
-          : "http://localhost:5000/api/v1/user/register",
+          ? `${process.env.NEXT_PUBLIC_PORT}user/login`
+          : `${process.env.NEXT_PUBLIC_PORT}user/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

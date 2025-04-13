@@ -27,7 +27,7 @@ export default function NovelPage() {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/v1/novels/${novelId}`
+          `${process.env.NEXT_PUBLIC_PORT}novels/${novelId}`
         );
         const data = await response.json();
         console.log("API Response:", data); // Debug log

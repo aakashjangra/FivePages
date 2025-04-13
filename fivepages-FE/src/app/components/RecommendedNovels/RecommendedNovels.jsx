@@ -9,7 +9,7 @@ export default function RecommendedNovels({ novelId, count = 5 }) {
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/v1/novels/`);;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_PORT}novels/`);;
         const data = await res.json();
         console.log(data)
         setRecommendations(data);

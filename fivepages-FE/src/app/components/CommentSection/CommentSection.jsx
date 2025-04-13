@@ -41,7 +41,7 @@ export default function CommentSection({ itemId, type }) {
       };
 
       const res = await fetch(
-        `http://localhost:5000/api/v1/comments/${itemId}?type=${type}`,
+        `${process.env.NEXT_PUBLIC_PORT}comments/${itemId}?type=${type}`,
         requestOptions
       );
       const data = await res.json();
@@ -59,8 +59,8 @@ export default function CommentSection({ itemId, type }) {
     try {
       setLoading(true);
       const url = editingComment
-        ? `http://localhost:5000/api/v1/comments/${editingComment._id}`
-        : "http://localhost:5000/api/v1/comments/";
+        ? `${process.env.NEXT_PUBLIC_PORT}comments/${editingComment._id}`
+        : `${process.env.NEXT_PUBLIC_PORT}comments/`;
 
       const method = editingComment ? "PUT" : "POST";
 
@@ -87,7 +87,7 @@ export default function CommentSection({ itemId, type }) {
       //   redirect: "follow",
       // };
 
-      // fetch("http://localhost:5000/api/v1/comments/", requestOptions)
+      // fetch(`${process.env.NEXT_PUBLIC_PORT}/comments/`, requestOptions)
       //   .then((response) => response.json())
       //   .then((result) => console.log(result))
       //   .catch((error) => console.error(error));
@@ -119,7 +119,7 @@ export default function CommentSection({ itemId, type }) {
   const handleDelete = async (commentId) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/v1/comments/${commentId}`,
+        `${process.env.NEXT_PUBLIC_PORT}comments/${commentId}`,
         {
           method: "DELETE",
           headers: {

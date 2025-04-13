@@ -31,7 +31,7 @@ export default function ChapterPage() {
         
         // 1. First fetch the chapter data
         const chapterResponse = await fetch(
-          `http://localhost:5000/api/v1/chapters/${id}`
+          `${process.env.NEXT_PUBLIC_PORT}chapters/${id}`
         );
         
         if (!chapterResponse.ok) {
@@ -45,7 +45,7 @@ export default function ChapterPage() {
 
         // 2. Then fetch the novel data - use chapterData.novel (not novelId)
         const novelResponse = await fetch(
-          `http://localhost:5000/api/v1/novels/${chapterData.novel}`
+          `${process.env.NEXT_PUBLIC_PORT}novels/${chapterData.novel}`
         );
         
         if (!novelResponse.ok) {

@@ -8,11 +8,15 @@ export default function AllNovels() {
   const [books, setBooks] = useState([]);
   const router = useRouter();
 
+
   useEffect(() => {
-    fetch(`${process.env.PORT}novels/latest`)
+    console.log(process.env.NEXT_PUBLIC_PORT)
+    fetch(`${process.env.NEXT_PUBLIC_PORT}novels/latest`)
       .then((res) => res.json())
       .then((data) => setBooks(data))
+      // console.log(data)
       .catch((error) => console.error("Error fetching books:", error));
+
   }, []);
 
   return (
