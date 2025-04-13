@@ -106,13 +106,13 @@ export const logoutUser = async (req, res) => {
 
 //done and tested
 export const changePassword = async (req, res) => {
-  const { currentPassword, newPassword } = req.body;
+  const { oldPassword, newPassword } = req.body;
   const userId = req.user._id;
 
-  if (!currentPassword || !newPassword) {
-    return res.status(400).json({ "message": "currentPassword and newPassword are required" });
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ "message": "oldPassword and newPassword are required" });
   }
-  if (currentPassword === newPassword) {
+  if (oldPassword === newPassword) {
     return res.status(400).json({ "message": "New password should be different from current password" });
   }
 
@@ -121,7 +121,7 @@ export const changePassword = async (req, res) => {
     return res.status(404).json({ "message": "User not found" });
   }
 
-  const isPasswordValid = await user.isPasswordCorrect(currentPassword);
+  const isPasswordValid = await user.isPasswordCorrect(oldPassword);
   if (!isPasswordValid) {
     return res.status(400).json({ "message": "Incorrect Password" });
   }
