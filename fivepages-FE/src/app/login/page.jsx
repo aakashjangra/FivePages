@@ -4,43 +4,47 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { loginComplete } from "@/lib/store/authSlice";
 
 export default function AuthPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const nameRef = useRef(null);
 
-  const handleKeyDown = (e, nextRef) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (nextRef?.current) {
-        nextRef.current.focus();
-      }
-    }
-  };
 
+  // Redirect if already logged in
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setIsAuthenticated(true);
+
       router.push("/");
     }
   }, [router]);
+
+  const handleKeyDown = (e, nextRef) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (nextRef?.current) nextRef.current.focus();
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (!email || !password || (!isLogin && !name)) {
+
+    if (!email.trim() || !password.trim() || (!isLogin && !name.trim())) {
+
       setError("Please fill in all fields.");
       return;
     }
@@ -77,23 +81,26 @@ export default function AuthPage() {
       console.log(data)
       if (!response.ok) {
         setError(data.message || "Something went wrong!");
-      } else {
-        // ✅ Updated: Save user info + token
-        localStorage.setItem("user", JSON.stringify({ ...data.user, token: data.accessToken }));
-        setIsAuthenticated(true);
+
+      } else if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        dispatch(loginComplete(data.user));
+
+        // ✅ Show toast message
+        toast.success(
+          isLogin ? "Login successful! Redirecting..." : "Registration successful! Redirecting..."
+        );
+
+        // Clear form fields
 
         setEmail("");
         setPassword("");
         setName("");
 
-        if (data.user) {
-          if (isLogin) {
-            toast.success("Login successful! Redirecting...");
-          } else {
-            toast.success("Registration successful! Redirecting...");
-          }
-          router.push("/");
-        }
+
+        // Redirect
+        router.push("/");
+
       }
     } catch (err) {
       setError("Network error. Please try again.");
@@ -174,10 +181,7 @@ export default function AuthPage() {
         </form>
 
         <div className="text-center mt-6">
-          <Link
-            href="/forgot-password"
-            className="text-blue-900 text-sm hover:underline"
-          >
+          <Link href="/forgot-password" className="text-blue-900 text-sm hover:underline">
             Forgot Password?
           </Link>
         </div>

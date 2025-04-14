@@ -55,6 +55,10 @@ export default function ChapterPage() {
         const novelData = await novelResponse.json();
         console.log("Novel data:", novelData);
         setNovel(novelData);
+       localStorage.setItem(`lastRead-${chapterData.novel}`, chapterData._id);
+
+
+
 
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -80,7 +84,7 @@ export default function ChapterPage() {
       </div>
     );
   }
-
+  
   if (error) {
     return (
       <div className="max-w-2xl mx-auto p-6 text-center">
