@@ -2,6 +2,7 @@
 import './globals.css';
 import Navbar from './components/Navbar/Navbar';
 
+
 import { ReduxProvider } from './provider';
 import { Toaster } from 'react-hot-toast';
 

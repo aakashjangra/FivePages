@@ -1,5 +1,4 @@
-
-'use client';
+"use client";
 
 import { useSelector, useDispatch } from "react-redux";
 import { logoutComplete } from "@/lib/store/authSlice";
@@ -7,14 +6,14 @@ import Link from "next/link";
 import { FaSearch, FaUserCircle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+
   const { user, isAuthenticated, isReady } = useSelector((state) => state.auth);
 
-  // Log current state for debugging
   useEffect(() => {
     console.log("📦 Navbar Redux state:", {
       user,
@@ -27,14 +26,15 @@ const Navbar = () => {
     const value = event.target.value;
     if (value === "profile") router.push("/profile");
     if (value === "logout") handleLogout();
-    event.target.value = "";
+    event.target.value = ""; // Reset select dropdown
   };
 
   const handleLogout = () => {
     console.log("🚪 Logging out...");
     localStorage.removeItem("user");
     sessionStorage.clear();
-    document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     dispatch(logoutComplete());
     toast.success("Logged out successfully!");
     router.push("/login");
@@ -42,7 +42,7 @@ const Navbar = () => {
 
   if (!isReady) {
     console.log("⏳ Navbar waiting for isReady...");
-    return null; // or loading skeleton
+    return null; // or return a loader
   }
 
   return (
@@ -60,10 +60,35 @@ const Navbar = () => {
       </div>
 
       <ul className="flex gap-4 list-none">
-        <li><Link href="/" className="text-black font-medium hover:text-blue-700">Home</Link></li>
-        <li><Link href="/popularbooks" className="text-black font-medium hover:text-blue-700">Popular</Link></li>
-        <li><Link href="/new-releases-page" className="text-black font-medium hover:text-blue-700">New Release</Link></li>
-        <li><Link href="/allnovels" className="text-black font-medium hover:text-blue-700">Novels</Link></li>
+        <li>
+          <Link href="/" className="text-black font-medium hover:text-blue-700">
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/popularbooks"
+            className="text-black font-medium hover:text-blue-700"
+          >
+            Popular
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/new-releases-page"
+            className="text-black font-medium hover:text-blue-700"
+          >
+            New Release
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/allnovels"
+            className="text-black font-medium hover:text-blue-700"
+          >
+            Novels
+          </Link>
+        </li>
       </ul>
 
       <div className="flex items-center gap-6">
@@ -75,7 +100,9 @@ const Navbar = () => {
           />
           <FaSearch className="text-blue-700" />
         </div>
-        {/* {isAuthenticated ? (
+
+        {/* Profile Section with Dropdown */}
+        {isAuthenticated && user ? (
           <div className="flex items-center gap-2">
             <FaUserCircle className="text-2xl text-black" />
             <select
@@ -96,34 +123,7 @@ const Navbar = () => {
               Login
             </button>
           </Link>
-        )} */}
-
-        {isAuthenticated ? (
-  <div className="flex items-center gap-2">
-    <FaUserCircle className="text-2xl text-black" />
-    <div className="relative">
-      <button className="border border-gray-300 rounded-md px-2 py-1 bg-white cursor-default">
-        {user?.name || "My Account"}
-      </button>
-      <select
-        className="absolute inset-0 opacity-0 cursor-pointer"
-        onChange={handleSelectChange}
-        defaultValue=""
-      >
-        <option value="" disabled hidden></option>
-        <option value="profile">Profile</option>
-        <option value="logout">Logout</option>
-      </select>
-    </div>
-  </div>
-) : (
-  <Link href="/login">
-    <button className="bg-white text-black px-2 py-1 rounded-md hover:bg-gray-100 transition">
-      Login
-    </button>
-  </Link>
-)}
-
+        )}
       </div>
     </nav>
   );
