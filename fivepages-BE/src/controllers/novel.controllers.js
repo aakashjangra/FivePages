@@ -64,9 +64,9 @@ export const getNovels = async (req, res) => {
 };
 
 //done
+
 export const getRecommendedNovels = async (req, res) => {
-  const count = req.query?.count ? parseInt(req.query.count) : undefined;
-  const novelID = req.query?.id;
+  const { id: novelID, count } = req.params;
 
   if (
     !novelID ||
@@ -74,17 +74,24 @@ export const getRecommendedNovels = async (req, res) => {
     !novelID.trim() ||
     !mongoose.Types.ObjectId.isValid(novelID)
   ) {
-    return res.status(400).json({ message: "Novel ID is required" });
+    return res.status(400).json({ message: "Valid novel ID is required" });
   }
 
-  if (!count) {
-    return res.status(400).json({
-      message: "count is required!",
-    });
+  const limit = parseInt(count);
+  if (!limit || isNaN(limit)) {
+    return res.status(400).json({ message: "'count' must be a valid number" });
   }
 
   try {
     const currentNovel = await Novel.findById(novelID);
+    if (!currentNovel) {
+      return res.status(404).json({ message: "Novel not found" });
+    }
+
+    if (!currentNovel.tags || currentNovel.tags.length === 0) {
+      return res.status(200).json([]); // No tags = no recommendations
+    }
+
     const recommendedNovels = await Novel.aggregate([
       {
         $match: {
@@ -99,8 +106,8 @@ export const getRecommendedNovels = async (req, res) => {
           },
         },
       },
-      { $sort: { similarityScore: -1 } }, // Higher similarity first
-      { $limit: count },
+      { $sort: { similarityScore: -1 } },
+      { $limit: limit },
       {
         $project: {
           title: 1,
@@ -112,7 +119,8 @@ export const getRecommendedNovels = async (req, res) => {
 
     res.status(200).json(recommendedNovels);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Recommendation error:", err.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

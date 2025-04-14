@@ -15,12 +15,14 @@ const Navbar = () => {
   const { user, isAuthenticated, isReady } = useSelector((state) => state.auth);
 
   useEffect(() => {
+
     console.log("📦 Navbar Redux state:", {
       user,
       isAuthenticated,
       isReady,
     });
   }, [user, isAuthenticated, isReady]);
+
 
   const handleSelectChange = (event) => {
     const value = event.target.value;
@@ -124,7 +126,9 @@ const Navbar = () => {
             </button>
           </Link>
         )}
+
       </div>
+
     </nav>
   );
 };
