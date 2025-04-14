@@ -1,11 +1,17 @@
 "use client";
 import { useRouter } from "next/navigation";
+import React,{ useCallback } from "react";
 
-const NewReleases = ({ books }) => {
+// Memoize the NewReleases component to prevent unnecessary re-renders
+const NewReleases = React.memo(({ books }) => {
   const router = useRouter();
 
+  // Memoize the click handler to prevent unnecessary re-creations
+  const handleClick = useCallback((id) => {
+    router.push(`/novels/${id}`);
+  }, [router]);
+
   return (
-  
     <section className="p-6 bg-white">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold flex items-center">
@@ -20,16 +26,17 @@ const NewReleases = ({ books }) => {
       </div>
 
       <div className="grid grid-cols-5 gap-3 mt-6">
-        {books.slice(0, 5).map((book, index) => (
-          <div key={index} className="text-center shadow-lg rounded p-2" >
-             {/* Clickable image */}
-              <button onClick={() => router.push(`/novels/${book._id}`)}>
-                <img
-                  src={book.thumbnail}
-                  alt={book.title}
-                  className="w-40 h-50 object-cover rounded-lg shadow-md cursor-pointer hover:scale-105 transition-transform"
-                />
-              </button>
+        {books.slice(0, 5).map((book) => (
+          <div key={book._id} className="text-center shadow-lg rounded p-2">
+            {/* Clickable image */}
+            <button onClick={() => handleClick(book._id)}>
+              <img
+                src={book.thumbnail}
+                alt={book.title}
+                className="w-40 h-50 object-cover rounded-lg shadow-md cursor-pointer hover:scale-105 transition-transform"
+                loading="lazy" // Lazy load images
+              />
+            </button>
             <h3 className="text-md font-semibold mt-2">{book.title}</h3>
             <p className="text-sm text-gray-500">By: {book.author}</p>
             <p className="text-green-600 font-bold text-sm">
@@ -40,6 +47,6 @@ const NewReleases = ({ books }) => {
       </div>
     </section>
   );
-};
+});
 
 export default NewReleases;

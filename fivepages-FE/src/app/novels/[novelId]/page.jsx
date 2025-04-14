@@ -21,6 +21,7 @@ export default function NovelPage() {
   const [isLiked, setIsLiked] = useState(false);
 
 
+    console.log(process.env.NEXT_PUBLIC_PORT)
   useEffect(() => {
     const fetchNovel = async () => {
       console.log("Fetching novel with ID:", novelId); // Debug log

@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_PORT;
+const BASE_URL = process.env.NEXT_PUBLIC_PORT ;
 
 const getToken = () => {
   if (typeof window !== "undefined") {

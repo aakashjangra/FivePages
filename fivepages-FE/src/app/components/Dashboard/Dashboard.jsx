@@ -5,49 +5,71 @@ import PopularBooks from "../Popular/Popular";
 import NewReleases from "../NewRealease/NewRelease";
 import CorouselComponent from "../Corousel/CarouselComponent";
 
+// Reusable Skeleton Loader
+const Skeleton = ({ className = "" }) => (
+  <div className={`bg-gray-200 dark:bg-gray-700 animate-pulse rounded ${className}`} />
+);
 
 const Dashboard = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Fetching books from API
+  const fetchBooks = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_PORT || ""}novels/latest`);
+      if (!res.ok) throw new Error(`API Error: ${res.status}`);
+
+      const data = await res.json();
+      setBooks(data);
+    } catch (err) {
+      console.error("Fetch Error:", err.message);
+      setError("Failed to fetch latest novels.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_PORT}novels/latest`
-        );
-        if (!response.ok) throw new Error(`API Error: ${response.status}`);
-
-        const data = await response.json();
-        console.log("Fetched Novels:", data);
-        setBooks(data);
-      } catch (err) {
-        console.error("Fetch Error:", err.message);
-        setError("Failed to fetch latest novels.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchBooks();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="lg:mx-32 mx-[25px] flex flex-col min-h-screen gap-6 py-8">
+        <Skeleton className="h-48 w-full rounded-lg" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <Skeleton key={i} className="h-40" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="lg:mx-32 mx-[25px] flex flex-col min-h-screen justify-center items-center py-8">
+        <p className="text-red-500 text-center text-lg">{error}</p>
+      </div>
+    );
+  }
+
+  if (books.length === 0) {
+    return (
+      <div className="lg:mx-32 mx-[25px] flex flex-col min-h-screen justify-center items-center py-8">
+        <p className="text-center text-lg text-gray-500">No books available at the moment.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="lg:mx-32 mx-25px flex flex-col min-h-screen">
-      {loading ? (
-        <p className="text-center text-lg my-4">Loading...</p>
-      ) : error ? (
-        <p className="text-red-500 text-center">{error}</p>
-      ) : (
-        <>
-          {/* <NewCorousel books={books}/> */}
-          <CorouselComponent books={books} />
-          <PopularBooks books={books} />
-          <NewReleases books={books} />
-          
-        </>
-      )}
+    <div className="lg:mx-32 mx-[25px] flex flex-col min-h-screen gap-6 py-8">
+      {/* Only show components after the books are loaded */}
+      <CorouselComponent books={books} />
+      <PopularBooks books={books} />
+      <NewReleases books={books} />
     </div>
   );
 };

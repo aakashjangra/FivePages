@@ -1,8 +1,15 @@
 "use client";
 import { useRouter } from "next/navigation";
+import React,{ useCallback } from "react";
 
-const PopularBooks = ({ books }) => {
+// Memoize PopularBooks component to avoid unnecessary re-renders
+const PopularBooks = React.memo(({ books }) => {
   const router = useRouter();
+
+  // Memoize the click handler to prevent unnecessary re-creations
+  const handleClick = useCallback((id) => {
+    router.push(`/novels/${id}`);
+  }, [router]);
 
   return (
     <section className="p-6 bg-white mb-2">
@@ -18,17 +25,17 @@ const PopularBooks = ({ books }) => {
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 mt-6 ">
-        {books.slice(0, 6).map((book, index) => (
-          <div key={index} className="flex gap-4  rounded p-2 shadow-lg" >
+      <div className="grid grid-cols-3 gap-6 mt-6">
+        {books.slice(0, 6).map((book) => (
+          <div key={book._id} className="flex gap-4 rounded p-2 shadow-lg">
             {/* Clickable image */}
-            <button onClick={() => router.push(`/novels/${book._id}`)}>
-                <img
-                  src={book.thumbnail}
-                  alt={book.title}
-                  className="w-28 h-40 object-cover rounded-lg shadow-md cursor-pointer hover:scale-105 transition-transform"
-                />
-              </button>
+            <button onClick={() => handleClick(book._id)}>
+              <img
+                src={book.thumbnail}
+                alt={book.title}
+                className="w-28 h-40 object-cover rounded-lg shadow-md cursor-pointer hover:scale-105 transition-transform"
+              />
+            </button>
             <div>
               <h3 className="text-lg font-semibold">{book.title}</h3>
               <p className="text-sm text-gray-500">By: {book.author}</p>
@@ -44,6 +51,6 @@ const PopularBooks = ({ books }) => {
       </div>
     </section>
   );
-};
+});
 
 export default PopularBooks;
