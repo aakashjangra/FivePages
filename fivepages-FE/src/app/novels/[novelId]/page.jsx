@@ -48,9 +48,6 @@ export default function NovelPage() {
     if (novelId) fetchNovel();
   }, [novelId]);
 
-
- 
-
   if (loading) return <p className="text-center text-xl">Loading novel...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
@@ -68,25 +65,13 @@ export default function NovelPage() {
     );
   };
 
-  // const readNow = () => {
-  //   if (novel?.chapters?.length > 0) {
-  //     router.push(`/chapters/${novel.chapters[0]?._id}`);
-  //   } else {
-  //     console.error("No chapters available for this novel");
-  //   }
-  // };
-
   const readNow = () => {
-    const savedProgress = localStorage.getItem(`lastRead-${novelId}`);
-    const chapterIdToRead = savedProgress || novel?.chapters?.[0]?._id;
-  
-    if (chapterIdToRead) {
-      router.push(`/chapters/${chapterIdToRead}`);
+    if (novel?.chapters?.length > 0) {
+      router.push(`/chapters/${novel.chapters[0]?._id}`);
     } else {
       console.error("No chapters available for this novel");
     }
   };
-  
 
   return (
     <div className="flex justify-center bg-[#F4F4F4] p-4 ">
@@ -129,7 +114,7 @@ export default function NovelPage() {
             onClick={readNow}
             className="cursor-pointer px-4 py-2 flex gap-2 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
           >
-            <BookOpen   /> Start Reading
+            <BookOpen /> Start Reading
           </button>
           <button
             onClick={toggleReadList}
