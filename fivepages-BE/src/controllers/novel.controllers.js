@@ -4,23 +4,30 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 //done and tested
 export const searchNovels = async (req, res) => {
-  const { param } = req.params; // Get search query from frontend
+  try {
+    const { param } = req.params;
 
-  if (!param) {
-    return res.status(400).json({ message: "Seach query is required!" });
+    if (!param) {
+      return res.status(400).json({ message: "Search query is required!" });
+    }
+
+    const regex = new RegExp(param, "i"); // Case-insensitive regex
+
+    const query = {
+      $or: [
+        { title: { $regex: regex } },
+        { author: { $regex: regex } },
+        { tags: { $in: [param.toLowerCase()] } }, // Tag matching, ensure lowercase
+      ],
+    };
+
+    const novels = await Novel.find(query).limit(50); // Limit to avoid over-fetching
+
+    return res.status(200).json({ data: novels });
+  } catch (err) {
+    console.error("Error searching novels:", err);
+    return res.status(500).json({ message: "Server error" });
   }
-
-  let query = {
-    $or: [
-      { title: { $regex: param, $options: "i" } }, // Case-insensitive search
-      { author: { $regex: param, $options: "i" } },
-      { tags: { $in: [param] } },
-    ],
-  };
-
-  const novels = await Novel.find(query); // Fetch novels based on search query
-
-  return res.status(200).json({ data: novels });
 };
 
 export const getLatestNovels = async (req, res) => {
@@ -292,3 +299,5 @@ export const deleteNovel = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+

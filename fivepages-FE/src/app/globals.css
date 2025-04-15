@@ -5,7 +5,7 @@
 @import "swiper/css";
 @import "swiper/css/navigation";
 @import "swiper/css/pagination";
-@import "tw-animate-css";
+
 
 @custom-variant dark (&:is(.dark *));
 
