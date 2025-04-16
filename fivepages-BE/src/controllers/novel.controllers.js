@@ -300,4 +300,59 @@ export const deleteNovel = async (req, res) => {
   }
 };
 
+export const updateNovel = async (req, res) => {
+  const novelID = req.params.id;
 
+  if (
+    !novelID ||
+    typeof novelID !== "string" ||
+    !novelID.trim() ||
+    !mongoose.Types.ObjectId.isValid(novelID)
+  ) {
+    return res.status(400).json({ message: "Valid novel ID is required" });
+  }
+
+  const {
+    title,
+    author,
+    publishedYear,
+    synopsis,
+    rating,
+    type,
+    language,
+    tags,
+  } = req.body;
+
+  const updateData = {
+    ...(title && { title }),
+    ...(author && { author }),
+    ...(publishedYear && { publishedYear }),
+    ...(synopsis && { synopsis }),
+    ...(rating && { rating }),
+    ...(type && { type }),
+    ...(language && { language }),
+    ...(tags && { tags }),
+  };
+
+  if (req.file?.path) {
+    const thumbnail = await uploadOnCloudinary(req.file.path);
+    if (!thumbnail?.url) {
+      return res.status(400).json("Error while uploading thumbnail to Cloudinary!");
+    }
+    updateData.thumbnail = thumbnail.url;
+  }
+
+  try {
+    const updatedNovel = await Novel.findByIdAndUpdate(novelID, updateData, {
+      new: true,
+    });
+
+    if (!updatedNovel) {
+      return res.status(404).json({ message: "Novel not found" });
+    }
+
+    res.status(200).json(updatedNovel);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
