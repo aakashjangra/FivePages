@@ -2,12 +2,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_PORT ;
 
 const getToken = () => {
   if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token");
-    if (!token || token === "undefined" || token.length < 20) {
+    const token = localStorage.getItem("user");
+    if (!token || token === "undefined" || token.length < 80) {
       console.warn("⚠️ Invalid or malformed token in localStorage:", token);
       return null;
     }
-    console.log(token)
     return token;
   }
   return null;
@@ -44,7 +43,8 @@ const fetchData = async (endpoint, { method = "GET", body = null, headers = {} }
 export const fetchPopularBooks = () => fetchData("novels/latest");
 export const fetchNewReleases = () => fetchData("novels/latest");
 export const fetchCarouselImages = () => fetchData("novels/latest");
-export const fetchNovelById = (id) => fetchData(`novels/${id}`);
+export const fetchNovelById = (novelId) => fetchData(`novels/${novelId}`);
+export const fetchAllNovels = () => fetchData("novels/")
 
 // 🔹 Comments
 export const fetchCommentsByNovel = (novelId) => fetchData(`comments?novelId=${novelId}`);

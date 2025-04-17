@@ -2,26 +2,27 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "../components/Navbar/Navbar";
+import { fetchAllNovels } from "./../utlis/api";
 
 export default function AllNovels() {
   const [books, setBooks] = useState([]);
   const router = useRouter();
 
-
   useEffect(() => {
-    console.log(process.env.NEXT_PUBLIC_PORT)
-    fetch(`${process.env.NEXT_PUBLIC_PORT}novels/latest`)
-      .then((res) => res.json())
-      .then((data) => setBooks(data))
-      // console.log(data)
-      .catch((error) => console.error("Error fetching books:", error));
-
+    const allNovels = async () => {
+      const result = await fetchAllNovels();
+      // console.log(result);
+      if (!result.error) {
+        setBooks(result);
+      } else {
+        cosole.error("Error fetching books ", result.error);
+      }
+    };
+    allNovels();
   }, []);
 
   return (
     <>
-  
       <section className="p-6 bg-white">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold flex items-center">
