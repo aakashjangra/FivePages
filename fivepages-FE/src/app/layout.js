@@ -17,11 +17,11 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        <ReduxProvider>
+        
           <Navbar />
           <main  className="max-w-7xl mx-auto px-4">{children}</main>
           <Toaster position="top-right" />
-        </ReduxProvider>
+       
       </body>
 
     </html>
