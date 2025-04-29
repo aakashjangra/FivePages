@@ -5,6 +5,8 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import "../../globals.css";
 import { BookmarkCheck, BookOpen, Heart } from "lucide-react";
+import CommentSection from "./../../components/CommentSection/CommentSection";
+import RecommendedNovels from "../../components/RecommendedNovels/RecommendedNovels";
 
 export default function NovelPage() {
   const router = useRouter();
@@ -22,7 +24,7 @@ export default function NovelPage() {
     const fetchNovel = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/v1/novels/${novelId}`
+          `${process.env.NEXT_PUBLIC_PORT}novels/${novelId}`
         );
         const data = await response.json();
 

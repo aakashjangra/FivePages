@@ -18,7 +18,8 @@ router.get('/search/:param', searchNovels);
 // Get a single novel by ID
 router.get('/:id', getNovelByID);
 
-router.get('/:id/:count', getRecommendedNovels);
+// router.get("/:id/:count", getRecommendedNovels);
+router.get('/', getRecommendedNovels); // Accepts query parameters now
 
 // Create a new novel
 router.post('/', upload.single('thumbnail'), verifyJWT, verifyAdmin, createNovel);

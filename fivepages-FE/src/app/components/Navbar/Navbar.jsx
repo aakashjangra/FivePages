@@ -19,6 +19,7 @@ const Navbar = () => {
     console.log("📦 Navbar Redux state:", { user, isAuthenticated, isReady });
   }, [user, isAuthenticated, isReady]);
 
+
   const handleSelectChange = (event) => {
     const value = event.target.value;
     if (value === "profile") router.push("/profile");
@@ -94,6 +95,7 @@ const Navbar = () => {
             </button>
           </Link>
         )}
+
       </div>
 
       {/* Mobile Hamburger */}

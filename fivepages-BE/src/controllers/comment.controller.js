@@ -49,6 +49,7 @@ export const getComments = async (req, res) => {
       .sort({ createdAt: -1 });
 
     res.status(200).json(comments);
+    console.log(comments)
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -112,4 +113,8 @@ export const deleteComment = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+
 };
+
+
+

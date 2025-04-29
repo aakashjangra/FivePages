@@ -2,18 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "../components/Navbar/Navbar";
+import { fetchNewReleases } from "./../utlis/api";
 
 export default function NewReleasesPage() {
   const [books, setBooks] = useState([]);
   const router = useRouter();
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/v1/novels/latest")
-      .then((res) => res.json())
-      .then((data) => setBooks(data))
-      .catch((error) => console.error("Error fetching books:", error));
-  }, []);
+    useEffect(() => {
+      const getBooks = async () => {
+        const result = await fetchNewReleases();
+        if (!result.error) {
+          setBooks(result);
+        } else {
+          cosole.error("Error fetching books ", result.error);
+        }
+      };
+      getBooks();
+    }, []);
 
   return (
     <>

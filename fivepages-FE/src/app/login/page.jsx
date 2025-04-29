@@ -21,10 +21,12 @@ export default function AuthPage() {
   const passwordRef = useRef(null);
   const nameRef = useRef(null);
 
+
   // Redirect if already logged in
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
+
       router.push("/");
     }
   }, [router]);
@@ -40,7 +42,9 @@ export default function AuthPage() {
     e.preventDefault();
     setError("");
 
+
     if (!email.trim() || !password.trim() || (!isLogin && !name.trim())) {
+
       setError("Please fill in all fields.");
       return;
     }
@@ -60,8 +64,8 @@ export default function AuthPage() {
     try {
       const response = await fetch(
         isLogin
-          ? "http://localhost:5000/api/v1/user/login"
-          : "http://localhost:5000/api/v1/user/register",
+          ? `${process.env.NEXT_PUBLIC_PORT}user/login`
+          : `${process.env.NEXT_PUBLIC_PORT}user/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -74,9 +78,10 @@ export default function AuthPage() {
       );
 
       const data = await response.json();
-
+      console.log(data)
       if (!response.ok) {
         setError(data.message || "Something went wrong!");
+
       } else if (data.user) {
         localStorage.setItem("user", JSON.stringify(data.user));
         dispatch(loginComplete(data.user));
@@ -87,12 +92,15 @@ export default function AuthPage() {
         );
 
         // Clear form fields
+
         setEmail("");
         setPassword("");
         setName("");
 
+
         // Redirect
         router.push("/");
+
       }
     } catch (err) {
       setError("Network error. Please try again.");

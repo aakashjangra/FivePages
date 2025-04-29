@@ -44,50 +44,52 @@ export const createUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!password && !email) {
-    return res.status(400).json({ "message": "username and password are required" });
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
   }
 
-  const user = await User.findOne({
-    email
-  })
+  try {
+    const user = await User.findOne({ email });
 
-  if (!user) {
-    return res.status(404).json({ "message": "User does not exist!" });
+    if (!user) {
+      return res.status(404).json({ message: "User does not exist!" });
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Incorrect password" });
+    }
+
+    const accessToken =await  generateAccessToken(user._id);
+
+    if (!accessToken) {
+      return res.status(500).json({ message: "Could not generate access token" });
+    }
+
+    const loggedInUser = await User.findById(user._id).select("-password");
+
+    // Cookie options
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true in production
+    
+    };
+
+    console.log(accessToken)
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options) // ✅ cookie, not cookies
+      .json({
+        user: loggedInUser,
+        accessToken,
+        message: "User logged in successfully!"
+      });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Server error" });
   }
-
-  const isPasswordValid = await user.isPasswordCorrect(password);
-
-  if (!isPasswordValid) {
-    return res.status(400).json({ "message": "Incorrect Password" });
-  }
-
-  const accessToken = await generateAccessToken(user._id);
-
-  if (!accessToken) {
-    return res.status(500).json({ "message": "Could not generate access token" });
-  }
-
-  const loggedInUser = await User.findById(user._id).
-    select("-password");
-
-  //for cookies
-  const options = {
-    httpOnly: true,
-    secure: true
-  }
-  console.log(user)
-
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .json(
-      {
-        user: loggedInUser, accessToken,
-        "message": "User logged in successfully!"
-      },
-    )
-}
+};
 
 export const logoutUser = async (req, res) => {
 
@@ -104,13 +106,13 @@ export const logoutUser = async (req, res) => {
 
 //done and tested
 export const changePassword = async (req, res) => {
-  const { currentPassword, newPassword } = req.body;
+  const { oldPassword, newPassword } = req.body;
   const userId = req.user._id;
 
-  if (!currentPassword || !newPassword) {
-    return res.status(400).json({ "message": "currentPassword and newPassword are required" });
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ "message": "oldPassword and newPassword are required" });
   }
-  if (currentPassword === newPassword) {
+  if (oldPassword === newPassword) {
     return res.status(400).json({ "message": "New password should be different from current password" });
   }
 
@@ -119,7 +121,7 @@ export const changePassword = async (req, res) => {
     return res.status(404).json({ "message": "User not found" });
   }
 
-  const isPasswordValid = await user.isPasswordCorrect(currentPassword);
+  const isPasswordValid = await user.isPasswordCorrect(oldPassword);
   if (!isPasswordValid) {
     return res.status(400).json({ "message": "Incorrect Password" });
   }
@@ -133,3 +135,51 @@ export const changePassword = async (req, res) => {
     return res.status(500).json({ "message": error.message });
   }
 }
+
+export const updateUserBasicInfo = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { name, email } = req.body;
+
+    if (!name && !email) {
+      return res.status(400).json({ message: 'Name or email is required' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    if (name) user.name = name;
+    if (email) user.email = email;
+
+    await user.save();
+
+    res.status(200).json({
+      message: 'User information updated successfully',
+      user: {
+        name: user.name,
+        email: user.email,
+        profilePic: user.profilePic,
+      },
+    });
+  } catch (error) {
+    console.error('Update error:', error);
+    res.status(500).json({ message: 'Failed to update user information' });
+  }
+};
+
+
+// @desc    Get user profile
+// @route   GET /api/getUser
+// @access  Private
+export const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId).select('name email profilePic');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Get user error:', error);
+    res.status(500).json({ message: 'Failed to fetch user profile' });
+  }
+};
