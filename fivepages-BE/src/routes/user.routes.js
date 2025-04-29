@@ -22,6 +22,6 @@ router.get('/getUser', verifyJWT, getUserProfile);
 router.patch('/updateProfile', verifyJWT, updateUserBasicInfo);
 
 // forget password ki api bnani s
-// logout ki bhi 
+
 
 export default router;

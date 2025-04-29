@@ -1,13 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import CommentSection from "@/app/components/CommentSection/CommentSection";
 
 export default function ChapterPage() {
-  const router = useRouter();
   const { id } = useParams();
-  console.log("Chapter ID:", id);
+  const router = useRouter();
 
   const [chapter, setChapter] = useState(null);
   const [novel, setNovel] = useState(null);
@@ -15,6 +14,7 @@ export default function ChapterPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Authentication check
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (!user) {
@@ -24,54 +24,47 @@ export default function ChapterPage() {
     }
   }, [router]);
 
+  // Fetch chapter and novel data
   useEffect(() => {
+    if (!isAuthenticated || !id) return;
+
     const fetchData = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        
-        // 1. First fetch the chapter data
-        const chapterResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_PORT}chapters/${id}`
-        );
-        
-        if (!chapterResponse.ok) {
-          throw new Error("Failed to fetch chapter");
-        }
+        const chapterRes = await fetch(`${process.env.NEXT_PUBLIC_PORT}chapters/${id}`);
+        if (!chapterRes.ok) throw new Error("Failed to fetch chapter");
 
-        const chapterData = await chapterResponse.json();
-        console.log("Chapter data:", chapterData);
+        const chapterData = await chapterRes.json();
+        chapterData.content = chapterData.content.replace(/\n/g, "<br>");
         setChapter(chapterData);
-        chapterData.content = chapterData.content.replace(/\n/g , "<br>");
 
-        // 2. Then fetch the novel data - use chapterData.novel (not novelId)
-        const novelResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_PORT}novels/${chapterData.novel}`
-        );
-        
-        if (!novelResponse.ok) {
-          throw new Error("Failed to fetch novel");
-        }
+        const novelRes = await fetch(`${process.env.NEXT_PUBLIC_PORT}novels/${chapterData.novel}`);
+        if (!novelRes.ok) throw new Error("Failed to fetch novel");
 
-        const novelData = await novelResponse.json();
-        console.log("Novel data:", novelData);
+        const novelData = await novelRes.json();
         setNovel(novelData);
-       localStorage.setItem(`lastRead-${chapterData.novel}`, chapterData._id);
-
-
-
-
       } catch (err) {
-        console.error("Error fetching data:", err);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    if (isAuthenticated && id) {
-      fetchData();
-    }
+    fetchData();
   }, [id, isAuthenticated]);
+
+  const { currentIndex, prevChapter, nextChapter } = useMemo(() => {
+    if (!novel?.chapters || !id) {
+      return { currentIndex: -1, prevChapter: null, nextChapter: null };
+    }
+
+    const idx = novel.chapters.findIndex(ch => ch._id === id);
+    return {
+      currentIndex: idx,
+      prevChapter: idx > 0 ? novel.chapters[idx - 1] : null,
+      nextChapter: idx < novel.chapters.length - 1 ? novel.chapters[idx + 1] : null,
+    };
+  }, [novel, id]);
 
   if (!isAuthenticated) {
     return <div className="text-center py-10">Redirecting to login...</div>;
@@ -84,7 +77,7 @@ export default function ChapterPage() {
       </div>
     );
   }
-  
+
   if (error) {
     return (
       <div className="max-w-2xl mx-auto p-6 text-center">
@@ -113,15 +106,12 @@ export default function ChapterPage() {
     );
   }
 
-  // Find current chapter index for navigation
-  const currentIndex = novel.chapters?.findIndex(ch => ch._id === id) ?? -1;
-  const prevChapter = currentIndex > 0 ? novel.chapters[currentIndex - 1] : null;
-  const nextChapter = currentIndex < novel.chapters?.length - 1 ? novel.chapters[currentIndex + 1] : null;
-
   return (
     <div className="max-w-2xl mx-auto px-14 py-8 border-2 bg-white">
+
       {/* Breadcrumb Navigation */}
       <nav className="flex flex-wrap items-center mb-6 text-sm text-gray-600">
+
         <Link href="/" className="hover:text-blue-500">Home</Link>
         <span className="mx-2">/</span>
         <Link href="/novels" className="hover:text-blue-500">Novels</Link>
@@ -131,13 +121,13 @@ export default function ChapterPage() {
         <span className="text-gray-400">{chapter.title}</span>
       </nav>
 
-      {/* Chapter Header */}
+      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">{novel.title}</h1>
         <h2 className="text-2xl font-semibold text-gray-800 mt-2">{chapter.title}</h2>
       </div>
 
-      {/* Chapter Content */}
+      {/* Content */}
       <div className="prose max-w-none">
         {chapter.content ? (
           <div dangerouslySetInnerHTML={{ __html: chapter.content }} />
@@ -148,7 +138,10 @@ export default function ChapterPage() {
         )}
       </div>
 
-      {/* Chapter Navigation */}
+
+     
+
+      {/* Navigation */}
       <div className="mt-12 pt-6 border-t border-gray-200 flex justify-between">
         {prevChapter ? (
           <Link
@@ -160,9 +153,7 @@ export default function ChapterPage() {
             </svg>
             Previous Chapter
           </Link>
-        ) : (
-          <div></div>
-        )}
+        ) : <div></div>}
 
         <Link
           href={`/novels/${novel._id}`}
@@ -181,9 +172,8 @@ export default function ChapterPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
             </svg>
           </Link>
-        ) : (
-          <div></div>
-        )}
+        ) : <div></div>}
+        
       </div>
    
     </div>

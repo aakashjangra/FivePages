@@ -20,6 +20,7 @@ export default function NovelPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [newComment, setNewComment] = useState("");
 
+    // console.log(process.env.NEXT_PUBLIC_PORT)
   useEffect(() => {
     const fetchNovel = async () => {
       try {
@@ -56,11 +57,13 @@ export default function NovelPage() {
   };
 
   const readNow = () => {
+
     const savedProgress = localStorage.getItem(`lastRead-${novelId}`);
     const chapterIdToRead = savedProgress || novel?.chapters?.[0]?._id;
 
     if (chapterIdToRead) {
       router.push(`/chapters/${chapterIdToRead}`);
+
     } else {
       console.error("No chapters available for this novel");
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 
 export default function UserProfilePage() {
   const [user, setUser] = useState(null);
@@ -18,13 +18,13 @@ export default function UserProfilePage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const defaultUser = {
+  const defaultUser = useMemo(() => ({
     name: "Guest User",
     email: "guest@example.com",
     profilePic: "/default-avatar.png",
-  };
+  }), []);
 
-  const getToken = () => {
+  const getToken = useCallback(() => {
     const storedUser = localStorage.getItem("user");
     if (!storedUser) return null;
     try {
@@ -34,43 +34,42 @@ export default function UserProfilePage() {
       console.error("Error parsing user from localStorage", err);
       return null;
     }
-  };
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = getToken();
-        if (!token) throw new Error("No token found in localStorage");
-
-        setToken(token);
-        const response = await fetch(`${process.env.NEXT_PUBLIC_PORT}user/getUser`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch user data");
-
-        const data = await response.json();
-        console.log("Fetched user data:", data);
-
-        setUser(data);
-        setNewName(data.name);
-        setNewEmail(data.email);
-      } catch (error) {
-        console.warn("Error fetching user data, using default values:", error);
-        setUser(defaultUser);
-        setNewName(defaultUser.name);
-        setNewEmail(defaultUser.email);
-      } finally {
-        setLoadingUser(false);
-      }
-    };
-
-    fetchUserData();
   }, []);
 
-  const handleUpdateProfile = async () => {
+  const fetchUserData = useCallback(async () => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("No token found in localStorage");
+
+      setToken(token);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_PORT}user/getUser`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch user data");
+
+      const data = await response.json();
+      setUser(data);
+      setNewName(data.name);
+      setNewEmail(data.email);
+    } catch (error) {
+      console.warn("Error fetching user data, using default values:", error);
+      setUser(defaultUser);
+      setNewName(defaultUser.name);
+      setNewEmail(defaultUser.email);
+    } finally {
+      setLoadingUser(false);
+    }
+  }, [getToken, defaultUser]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  const handleUpdateProfile = useCallback(async (e) => {
+    e.preventDefault();
     setError("");
     setSuccess("");
 
@@ -89,14 +88,10 @@ export default function UserProfilePage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          name: newName,
-          email: newEmail,
-        }),
+        body: JSON.stringify({ name: newName, email: newEmail }),
       });
 
       const data = await response.json();
-      console.log("Update profile response:", data);
 
       if (response.ok) {
         setUser((prev) => ({
@@ -114,9 +109,10 @@ export default function UserProfilePage() {
     } finally {
       setUpdatingProfile(false);
     }
-  };
+  }, [getToken, newName, newEmail]);
 
-  const handleChangePassword = async () => {
+  const handleChangePassword = useCallback(async (e) => {
+    e.preventDefault();
     setError("");
     setSuccess("");
 
@@ -139,14 +135,10 @@ export default function UserProfilePage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          oldPassword,
-          newPassword,
-        }),
+        body: JSON.stringify({ oldPassword, newPassword }),
       });
 
       const data = await response.json();
-      console.log("Change password response:", data);
 
       if (response.ok) {
         setSuccess("Password updated successfully!");
@@ -161,7 +153,7 @@ export default function UserProfilePage() {
     } finally {
       setChangingPassword(false);
     }
-  };
+  }, [getToken, oldPassword, newPassword]);
 
   if (loadingUser || !user) {
     return (
@@ -179,7 +171,6 @@ export default function UserProfilePage() {
           User Profile
         </h2>
 
-        {/* Profile Picture */}
         <div className="flex justify-center mt-6">
           <img
             src={user.profilePic || "/default-avatar.png"}
@@ -188,93 +179,92 @@ export default function UserProfilePage() {
           />
         </div>
 
-        {/* Feedback */}
         {error && <p className="text-red-500 text-sm mt-4 text-center">{error}</p>}
         {success && <p className="text-green-600 text-sm mt-4 text-center">{success}</p>}
 
-        {/* Email */}
-        <div className="mt-4">
-          <label className="block text-gray-600 text-sm font-medium">Email</label>
-          <input
-            type="email"
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-            disabled={updatingProfile}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#4A90E2]"
-          />
-        </div>
+        {/* Profile Update Form */}
+        <form onSubmit={handleUpdateProfile} className="mt-6">
+          <div>
+            <label className="block text-gray-600 text-sm font-medium">Email</label>
+            <input
+              type="email"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              disabled={updatingProfile}
+              className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#4A90E2]"
+            />
+          </div>
 
-        {/* Name */}
-        <div className="mt-4">
-          <label className="block text-gray-600 text-sm font-medium">Name</label>
-          <input
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            disabled={updatingProfile}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#4A90E2]"
-          />
-        </div>
+          <div className="mt-4">
+            <label className="block text-gray-600 text-sm font-medium">Name</label>
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              disabled={updatingProfile}
+              className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#4A90E2]"
+            />
+          </div>
 
-        {/* Password Fields */}
-        <div className="mt-4 relative">
-          <label className="block text-gray-600 text-sm font-medium">
-            Old Password
-          </label>
-          <input
-            type={showPassword ? "text" : "password"}
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-            placeholder="Enter current password"
-            disabled={changingPassword}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#4A90E2] pr-10"
-          />
-        </div>
-
-        <div className="mt-4 relative">
-          <label className="block text-gray-600 text-sm font-medium">
-            New Password
-          </label>
-          <input
-            type={showPassword ? "text" : "password"}
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            placeholder="Enter new password"
-            disabled={changingPassword}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#4A90E2] pr-10"
-          />
           <button
-            type="button"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-            onClick={() => setShowPassword(!showPassword)}
-            disabled={changingPassword || updatingProfile}
-          >
-            {showPassword ? "🙈" : "👁️"}
-          </button>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="mt-6 space-y-3">
-          <button
-            onClick={handleUpdateProfile}
+            type="submit"
             disabled={updatingProfile}
-            className={`w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition ${
+            className={`w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition mt-6 ${
               updatingProfile && "cursor-not-allowed opacity-70"
             }`}
           >
             {updatingProfile ? "Updating..." : "Update Profile"}
           </button>
+        </form>
+
+        {/* Password Change Form */}
+        <form onSubmit={handleChangePassword} className="mt-8">
+          <div className="relative">
+            <label className="block text-gray-600 text-sm font-medium">
+              Old Password
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              placeholder="Enter current password"
+              disabled={changingPassword}
+              className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#4A90E2] pr-10"
+            />
+          </div>
+
+          <div className="mt-4 relative">
+            <label className="block text-gray-600 text-sm font-medium">
+              New Password
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter new password"
+              disabled={changingPassword}
+              className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#4A90E2] pr-10"
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={changingPassword || updatingProfile}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </button>
+          </div>
 
           <button
-            onClick={handleChangePassword}
+            type="submit"
             disabled={changingPassword}
-            className={`w-full bg-green-500 text-white py-3 rounded hover:bg-green-600 transition ${
+            className={`w-full bg-green-500 text-white py-3 rounded hover:bg-green-600 transition mt-6 ${
               changingPassword && "cursor-not-allowed opacity-70"
             }`}
           >
             {changingPassword ? "Changing..." : "Change Password"}
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

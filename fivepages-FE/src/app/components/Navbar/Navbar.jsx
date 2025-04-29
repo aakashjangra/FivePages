@@ -1,21 +1,27 @@
 "use client";
 
-import { useSelector, useDispatch } from "react-redux";
-import { logoutComplete } from "@/lib/store/authSlice";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { FaSearch, FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
+
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 
-const Navbar = () => {
+
+export default function Navbar() {
   const router = useRouter();
+
   const dispatch = useDispatch();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { user, isAuthenticated, isReady } = useSelector((state) => state.auth);
 
+  // track search input
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // reload user on path change
   useEffect(() => {
+
     console.log("📦 Navbar Redux state:", { user, isAuthenticated, isReady });
   }, [user, isAuthenticated, isReady]);
 
@@ -33,8 +39,20 @@ const Navbar = () => {
     document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     dispatch(logoutComplete());
     toast.success("Logged out successfully!");
+
     router.push("/login");
-  };
+  }, [router]);
+
+  const handleSelectChange = useCallback(
+    (e) => {
+      const val = e.target.value;
+      if (val === "profile") router.push("/profile");
+      else if (val === "logout") handleLogout();
+      e.target.value = "";
+    },
+    [router, handleLogout]
+  );
+
 
   if (!isReady) return null;
 
@@ -96,7 +114,38 @@ const Navbar = () => {
           </Link>
         )}
 
-      </div>
+  
+
+          {/* Profile Section */}
+          {isAuthenticated ? (
+            <div className="flex items-center gap-2">
+              <FaUserCircle className="text-2xl text-black" aria-hidden="true" />
+              <select
+                aria-label="User menu"
+                className="border border-gray-300 rounded-md px-2 py-1 bg-white cursor-pointer"
+                onChange={handleSelectChange}
+                defaultValue=""
+              >
+                <option value="" disabled hidden>
+                  {userLabel}
+                </option>
+                <option value="profile">Profile</option>
+                <option value="logout">Logout</option>
+              </select>
+            </div>
+          ) : (
+            <Link href="/login">
+              <button
+                className="bg-white text-black px-2 py-1 rounded-md hover:bg-gray-100 transition"
+                aria-label="Login"
+              >
+                Login
+              </button>
+            </Link>
+          )}
+        </div>
+      </nav>
+
 
       {/* Mobile Hamburger */}
       <div className="flex md:hidden items-center">
@@ -137,4 +186,10 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+
+      <div aria-live="polite" aria-atomic="true" className="fixed top-4 right-4">
+        <Toaster />
+      </div>
+    </>
+  );
+}

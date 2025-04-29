@@ -1,4 +1,4 @@
-import { createNovel, deleteNovel, getLatestNovels, getNovelByID, getNovels, getRecommendedNovels, searchNovels } from '../controllers/novel.controllers.js';
+import { createNovel, deleteNovel, getLatestNovels, getNovelByID, getNovels, getRecommendedNovels, searchNovels, updateNovel, } from '../controllers/novel.controllers.js';
 import { verifyAdmin, verifyJWT } from '../middlewares/auth.middleware.js';
 import { upload } from '../middlewares/multer.middleware.js';
 import Novel from '../models/novel.models.js';
@@ -25,7 +25,7 @@ router.get('/', getRecommendedNovels); // Accepts query parameters now
 router.post('/', upload.single('thumbnail'), verifyJWT, verifyAdmin, createNovel);
 
 // Update a novel by ID
-// router.put('/:id', verifyJWT, getNovelByID);
+router.put('/:id', upload.single('thumbnail') , verifyJWT, verifyAdmin, updateNovel);
 
 // Delete a novel by ID
 router.delete('/:id', verifyJWT, deleteNovel);

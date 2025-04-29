@@ -1,8 +1,15 @@
 "use client";
 import { useRouter } from "next/navigation";
+import React,{ useCallback } from "react";
 
-const PopularBooks = ({ books }) => {
+// Memoize PopularBooks component to avoid unnecessary re-renders
+const PopularBooks = React.memo(({ books }) => {
   const router = useRouter();
+
+  // Memoize the click handler to prevent unnecessary re-creations
+  const handleClick = useCallback((id) => {
+    router.push(`/novels/${id}`);
+  }, [router]);
 
   return (
     <section className="p-4 sm:p-6 bg-white mb-4">
@@ -17,6 +24,7 @@ const PopularBooks = ({ books }) => {
           See More →
         </button>
       </div>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
         {books.slice(0, 6).map((book, index) => (
@@ -46,12 +54,13 @@ const PopularBooks = ({ books }) => {
                   {book.description}
                 </p>
               </div>
+
             </div>
           </div>
         ))}
       </div>
     </section>
   );
-};
+});
 
 export default PopularBooks;

@@ -4,23 +4,30 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 //done and tested
 export const searchNovels = async (req, res) => {
-  const { param } = req.params; // Get search query from frontend
+  try {
+    const { param } = req.params;
 
-  if (!param) {
-    return res.status(400).json({ message: "Seach query is required!" });
+    if (!param) {
+      return res.status(400).json({ message: "Search query is required!" });
+    }
+
+    const regex = new RegExp(param, "i"); // Case-insensitive regex
+
+    const query = {
+      $or: [
+        { title: { $regex: regex } },
+        { author: { $regex: regex } },
+        { tags: { $in: [param.toLowerCase()] } }, // Tag matching, ensure lowercase
+      ],
+    };
+
+    const novels = await Novel.find(query).limit(50); // Limit to avoid over-fetching
+
+    return res.status(200).json({ data: novels });
+  } catch (err) {
+    console.error("Error searching novels:", err);
+    return res.status(500).json({ message: "Server error" });
   }
-
-  let query = {
-    $or: [
-      { title: { $regex: param, $options: "i" } }, // Case-insensitive search
-      { author: { $regex: param, $options: "i" } },
-      { tags: { $in: [param] } },
-    ],
-  };
-
-  const novels = await Novel.find(query); // Fetch novels based on search query
-
-  return res.status(200).json({ data: novels });
 };
 
 export const getLatestNovels = async (req, res) => {
@@ -288,6 +295,63 @@ export const deleteNovel = async (req, res) => {
     if (!novel) return res.status(404).json({ message: "Novel not found" });
 
     res.status(200).json({ message: "Novel deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const updateNovel = async (req, res) => {
+  const novelID = req.params.id;
+
+  if (
+    !novelID ||
+    typeof novelID !== "string" ||
+    !novelID.trim() ||
+    !mongoose.Types.ObjectId.isValid(novelID)
+  ) {
+    return res.status(400).json({ message: "Valid novel ID is required" });
+  }
+
+  const {
+    title,
+    author,
+    publishedYear,
+    synopsis,
+    rating,
+    type,
+    language,
+    tags,
+  } = req.body;
+
+  const updateData = {
+    ...(title && { title }),
+    ...(author && { author }),
+    ...(publishedYear && { publishedYear }),
+    ...(synopsis && { synopsis }),
+    ...(rating && { rating }),
+    ...(type && { type }),
+    ...(language && { language }),
+    ...(tags && { tags }),
+  };
+
+  if (req.file?.path) {
+    const thumbnail = await uploadOnCloudinary(req.file.path);
+    if (!thumbnail?.url) {
+      return res.status(400).json("Error while uploading thumbnail to Cloudinary!");
+    }
+    updateData.thumbnail = thumbnail.url;
+  }
+
+  try {
+    const updatedNovel = await Novel.findByIdAndUpdate(novelID, updateData, {
+      new: true,
+    });
+
+    if (!updatedNovel) {
+      return res.status(404).json({ message: "Novel not found" });
+    }
+
+    res.status(200).json(updatedNovel);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

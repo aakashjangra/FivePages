@@ -1,10 +1,8 @@
-// src/app/layout.js
-import './globals.css';
-import Navbar from './components/Navbar/Navbar';
-
-
-import { ReduxProvider } from './provider';
-import { Toaster } from 'react-hot-toast';
+// import Navbar from "./Components/Navbar";
+import { Toaster } from "react-hot-toast";
+import Footer from "./components/Footer/Footer";
+import Navbar from "./components/Navbar/Navbar";
+import "./globals.css";
 
 export const metadata = {
   title: "FivePages",
@@ -13,6 +11,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
+
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,6 +23,7 @@ export default function RootLayout({ children }) {
           <Toaster position="top-right" />
         </ReduxProvider>
       </body>
+
     </html>
   );
 }
