@@ -28,7 +28,7 @@ const NewReleases = React.memo(({ books }) => {
       </div>
 
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
         {books.slice(0, 5).map((book, index) => (
           <div key={index} className="text-center shadow-lg rounded-lg p-3 bg-gray-50 hover:shadow-md transition-shadow">
             {/* Clickable image */}
