@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar/Navbar";
 
 export default function NewReleasesPage() {
   const [books, setBooks] = useState([]);
-    const router = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     fetch("http://localhost:5000/api/v1/novels/latest")
@@ -16,28 +16,30 @@ export default function NewReleasesPage() {
   }, []);
 
   return (
-  <>
+    <>
+      <section className="px-4 sm:px-6 py-6">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8">New Releases</h2>
 
-    <section className="p-6">
-      <h2 className="text-4xl font-bold text-center mb-6">New Releases</h2>
-
-      <div className="grid grid-cols-5 gap-3 shadow-lg p-4">
-        {books.map((book, index) => (
-          <div key={index} className="text-center shadow-lg rounded ">
-            <button onClick={() => router.push(`/novels/${book._id}`)}  >
-            <img
-              src={book.thumbnail}
-              alt={book.title}
-              className="w-40 h-60 object-cover rounded-lg shadow-md mx-auto cursor-pointer"
-            />
-            </button>
-            <h3 className="text-lg font-semibold mt-2">{book.title}</h3>
-            <p className="text-sm text-gray-500">By: {book.author}</p>
-            <p className="text-green-600 font-bold">{book.views} Views</p>
-          </div>
-        ))}
-      </div>
-    </section>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+          {books.map((book, index) => (
+            <div
+              key={index}
+              className="text-center shadow-lg rounded-lg p-3 bg-white hover:shadow-xl transition-all duration-300"
+            >
+              <button onClick={() => router.push(`/novels/${book._id}`)}>
+                <img
+                  src={book.thumbnail}
+                  alt={book.title}
+                  className="w-full h-52 sm:h-60 object-cover rounded-md shadow-md mx-auto cursor-pointer"
+                />
+              </button>
+              <h3 className="text-base sm:text-lg font-semibold mt-2">{book.title}</h3>
+              <p className="text-sm text-gray-500">By: {book.author}</p>
+              <p className="text-green-600 font-bold text-sm">{book.views} Views</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </>
   );
 }

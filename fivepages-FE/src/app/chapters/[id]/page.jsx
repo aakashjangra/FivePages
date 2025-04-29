@@ -120,7 +120,7 @@ export default function ChapterPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Breadcrumb Navigation */}
-      <nav className="flex mb-6 text-sm text-gray-600">
+      <nav className="flex flex-wrap items-center mb-6 text-sm text-gray-600">
         <Link href="/" className="hover:text-blue-500">Home</Link>
         <span className="mx-2">/</span>
         <Link href="/novels" className="hover:text-blue-500">Novels</Link>

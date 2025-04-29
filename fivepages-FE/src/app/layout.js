@@ -14,11 +14,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head />
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
       <body>
         <ReduxProvider>
           <Navbar />
-          <main>{children}</main>
+          <main  className="max-w-7xl mx-auto px-4">{children}</main>
           <Toaster position="top-right" />
         </ReduxProvider>
       </body>
