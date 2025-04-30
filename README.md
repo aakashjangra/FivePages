@@ -11,7 +11,7 @@ Database: MongoDB
 
 Authentication: JSON Web Tokens (JWT)
 
-Deployment: Vercel (Frontend), Render/Heroku (Backend)
+Deployment: Vercel (Frontend), Railway (Backend)
 
 🌟 Features
 Browse and read novels across various genres
