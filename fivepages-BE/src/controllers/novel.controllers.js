@@ -148,66 +148,66 @@ export const getNovelByID = async (req, res) => {
     const novel = await Novel.aggregate([
       { $match: { _id: new mongoose.Types.ObjectId(novelID) } },
       {
-      $lookup: {
-        from: "chapters",
-        localField: "_id",
-        foreignField: "novel",
-        as: "chapters",
-      },
-      },
-      {
-      $unwind: {
-        path: "$chapters",
-        preserveNullAndEmptyArrays: true,
-      },
+        $lookup: {
+          from: "chapters",
+          localField: "_id",
+          foreignField: "novel",
+          as: "chapters",
+        },
       },
       {
-      $sort: {
-        "chapters.chapterNumber": 1, // Sort chapters by chapter number in ascending order
-      },
-      },
-      {
-      $group: {
-        _id: "$_id",
-        title: { $first: "$title" },
-        author: { $first: "$author" },
-        thumbnail: { $first: "$thumbnail" },
-        publishedYear: { $first: "$publishedYear" },
-        synopsis: { $first: "$synopsis" },
-        rating: { $first: "$rating" },
-        type: { $first: "$type" },
-        language: { $first: "$language" },
-        tags: { $first: "$tags" },
-        chapters: { $push: "$chapters" },
-        createdAt: {$first: "$createdAt"},
-        updatedAt: {$first: "$updatedAt"}
-      },
+        $unwind: {
+          path: "$chapters",
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
-      $project: {
-        _id: 1,
-        title: 1,
-        author: 1,
-        thumbnail: 1,
-        publishedYear: 1,
-        synopsis: 1,
-        rating: 1,
-        type: 1,
-        language: 1,
-        tags: 1,
-        chapters: { _id: 1, title: 1, chapterNumber: 1 },
-        createdAt: 1,
-        updatedAt: 1
+        $sort: {
+          "chapters.chapterNumber": 1, // Sort chapters by chapter number in ascending order
+        },
       },
+      {
+        $group: {
+          _id: "$_id",
+          title: { $first: "$title" },
+          author: { $first: "$author" },
+          thumbnail: { $first: "$thumbnail" },
+          publishedYear: { $first: "$publishedYear" },
+          synopsis: { $first: "$synopsis" },
+          rating: { $first: "$rating" },
+          type: { $first: "$type" },
+          language: { $first: "$language" },
+          tags: { $first: "$tags" },
+          chapters: { $push: "$chapters" },
+          createdAt: { $first: "$createdAt" },
+          updatedAt: { $first: "$updatedAt" }
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          author: 1,
+          thumbnail: 1,
+          publishedYear: 1,
+          synopsis: 1,
+          rating: 1,
+          type: 1,
+          language: 1,
+          tags: 1,
+          chapters: { _id: 1, title: 1, chapterNumber: 1 },
+          createdAt: 1,
+          updatedAt: 1
+        },
       },
     ]);
 
     if (!novel || novel.length === 0) {
       return res.status(404).json({ message: "Novel not found" });
     }
-   
-    
-    res.status(200).json(novel[0]); 
+
+
+    res.status(200).json(novel[0]);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -268,7 +268,7 @@ export const createNovel = async (req, res) => {
       rating: rating ? rating : 5,
       type: type ? type : "NA",
       language: language ? language : "NA",
-      tags,
+      tags: JSON.parse(tags),
     });
     res.status(201).json(novel);
   } catch (err) {
@@ -294,7 +294,7 @@ export const deleteNovel = async (req, res) => {
 
     if (!novel) return res.status(404).json({ message: "Novel not found" });
 
-    res.status(200).json({ message: "Novel deleted successfully" });
+    res.status(200).json({ deletedNovel: novel, message: "Novel deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
